@@ -20,7 +20,13 @@ What skills tend to do instead is get copied and then modified for a new project
 \noindent\textbf{Age.}
 Age is usually measured as the amount of time since the file was introduced to the repository. This method of measurement will work well this skills. The GitSkills artifact subset has fields: first_commit_at and last_commit_at. The team will calculate the difference between first_commit_at and the dataset collection date, then convert this difference to days to create the Age metric.\par
 \noindent\textbf{Clone Coverage.} 
-\par
+Clone coverage measure how much content in a dataset is duplicated. In the GitSkills artifacts subset, there is a field called content_hash. Clones can be identifies by checking to see if they have the same content_hash. To calculate the clone coverage percentage, the team will group skills by content_hash and count the number of cloned skill occurrences. The number of cloned skill occurrences will then be divided by the total number of skill occurrences then multiplied by 100 to get the clone coverage percentage. 
+[
+\text{Clone Coverage} =
+\frac{\text{Number of cloned skill occurrences}}
+{\text{Total number of skill occurrences}}
+\times 100.
+]\par
 \noindent\textbf{Readability.} \TemplateField{Method and validation approach.}\par
 
 \CourseSubsection{Milestones and Division of Labor}
