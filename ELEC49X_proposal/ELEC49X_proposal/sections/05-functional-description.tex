@@ -1,17 +1,22 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-\Guidance{Use a set of diagrams to explain the system boundary, internal functions, operating behavior, inputs and outputs, signal types, protocols, direction of information flow, computing architecture, and / or anything else that applies. Write a short paragraph here that explains design decisions and references each figure, like Figure~\ref{fig:system}. Maintain labeling consistency (such as IDs, components, units, etc.) across tables and figures in this document. It's a good idea to reference these later in Section~\ref{sec:testing}.}
+Since this is a dataset analysis project, the system itself is fairly simple, as shown in Figure~\ref{fig:system}.
+GitSkills is distributed as a single SQLite database, with a Parquet copy of each table, and holds four tables: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}.
+The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
+A pre-processing script first transforms it for the metric scripts and filters out files that are not genuine skills (\texttt{filename}, \texttt{location\_class}, \texttt{frontmatter\_valid}).
+The cleaned data then passes to a separate calculation script for each metric, whose methods are described in Section~\ref{sec:design}.
+Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
+The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
 
 \begin{figure}[htbp]
 \centering
-\FigurePlaceholder{Show the functional, physical, and logical diagrams.\\Label components, inputs, outputs, arrows, and signal types or protocols.}
-\caption{\TemplateField{System architecture and information flow. (This is a generic example. Use several diagrams to show the various relationships between system components.)}}
+\includegraphics[width=\linewidth]{figures/490CapstoneProposalGeneralFigure1}
+\caption{Data flow from the GitSkills tables through the Python pipeline to the final metrics file.}
 \label{fig:system}
 \end{figure}
 
 \CourseSubsection{Interface and performance specifications}
-\Guidance{Give quantitative targets and tolerances with proper units. You can also use IDs to connect specifications with the tests in Section~\ref{sec:testing}. Write a short paragraph here giving context for these requirements, citing the IDs as necessary.}
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
@@ -27,13 +32,24 @@
 \endhead
 \bottomrule
 \endfoot
-% Add and replace data rows below.
-IF-01 & \TemplateField{Interface} & \TemplateField{Value; unit} & \TemplateField{Range} \\
+IF-01 & All four GitSkills tables load into Python with their documented columns & 4 of 4 tables & 0 missing columns \\
 \addlinespace[3pt]
-PF-01 & \TemplateField{Performance} & \TemplateField{Value; unit} & \TemplateField{Range} \\
+IF-02 & Scripts pass data keyed by \texttt{file\_sha}, with no rows lost between stages & 100\% of rows kept & 0 rows \\
+\addlinespace[3pt]
+IF-03 & Output file holds one row per distinct skill, in Parquet and CSV & 1 row per skill & 0 duplicates \\
+\addlinespace[3pt]
+PF-01 & Full-dataset run time on one workstation & $\leq$ 24 h & +12 h \\
+\addlinespace[3pt]
+PF-02 & Peak memory use, kept low through batching & $\leq$ 16 GB & +4 GB \\
+\addlinespace[3pt]
+PF-03 & Re-running the pipeline reproduces the same metrics & Identical output & 0 differences \\
+\addlinespace[3pt]
+PF-04 & Precision of cross-copy lineage links on the hand-labelled sample & $\geq$ 0.90 & $-$0.05 \\
 \end{longtable}
 \end{singlespace}
 
 \CourseSubsection{Risks and safety hazards}
-\Guidance{Identify relevant technical risks, health risks, and / or safety hazards, and indicate how you will manage these risks, and / or explain how system features and operating conditions are low-risk.}
+The project is purely computational, so it carries no physical, health, or safety hazards.
+The main technical risk is the dataset's size (about 44 GB), which is managed by reading the per-table Parquet files in batches rather than loading everything into memory.
+Since the data comes from public GitHub repositories with commit authors already anonymized, we will not attempt to identify individuals, and we will respect each repository's license when quoting skill content.
 \clearpage
