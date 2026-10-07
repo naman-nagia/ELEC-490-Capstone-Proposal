@@ -3,9 +3,20 @@
 \CourseSubsection{Metric Development and Analysis}
 
 The following outlines the proposed methods for measuring size, churn, age, clone coverage, and readability, including the data requirements, calculation procedures, and validation approach for each metric.
+Each metric follows four rough stages: it is prototyped on the official 13,000-skill GitSkills sample, calibrated, scaled to the full dataset, and validated.
 
-\noindent\textbf{Size.} \TemplateField{Method and validation approach.}\par
-\noindent\textbf{Churn.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Size.}
+Size is classically measured in lines, but that doesn't translate well to skills.
+A skill mixes plain-language instructions with code blocks, and a line of prose and a line of code carry very different amounts of information; in our pilot, about 12\% of a typical skill's body was code.
+Instead, we measure size in tokens, the units an agent actually reads text in and the units its context window is limited by.
+We split that count across the three parts of a skill, since an agent loads each at a different time: the \textit{description}, read for every installed skill to decide which one to use; the \textit{body}, loaded only once a skill is chosen; and the \textit{bundle}, the scripts and reference files the body points to.
+Measuring each part separately shows not just how big a skill is, but where that size costs the agent.
+Lines and words are still recorded alongside tokens, so skills can be compared directly with the code bundled next to them.\par
+
+\noindent\textbf{Churn.}
+Classically, churn is the number of lines added plus lines removed between commits, and it shows how much a file changes as it develops and what patterns those changes follow.
+Since lines don't fit skills well, churn needs adapting too, and the data adds a second complication: GitSkills records how often and when a skill was committed, but not what changed, and about two-thirds of skills in our pilot were never edited after being added.
+What skills tend to do instead is get copied and then modified for a new project, so we split churn into three types.\par
 \noindent\textbf{Age.} \TemplateField{Method and validation approach.}\par
 \noindent\textbf{Clone Coverage.} \TemplateField{Method and validation approach.}\par
 \noindent\textbf{Readability.} \TemplateField{Method and validation approach.}\par
