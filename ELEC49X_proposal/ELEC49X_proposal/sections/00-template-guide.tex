@@ -1,0 +1,140 @@
+% This page is included only while \showguidancetrue is active.
+% It is automatically omitted from the student submission when
+% \showguidancefalse is selected in metadata.tex.
+\newgeometry{left=0.70in,right=0.70in,top=0.55in,bottom=0.55in}
+\thispagestyle{empty}
+\begin{singlespace}
+\footnotesize
+\RaggedRight
+\setlength{\parskip}{2pt}
+\setlist[itemize]{leftmargin=1.25em,itemsep=0pt,topsep=2pt,parsep=0pt}
+\renewcommand{\arraystretch}{1.05}
+
+\begin{center}
+  {\LARGE\bfseries\color{QueensBurgundy} Proposal Template Guide\par}
+  \vspace{1pt}
+  {\normalsize\color{SmithBlue} Read this page before drafting the proposal.\par}
+\end{center}
+
+\vspace{2pt}
+\begingroup
+\setlength{\fboxsep}{6pt}
+\noindent\fcolorbox{QueensBurgundy}{LightGray}{%
+  \parbox{\dimexpr\linewidth-2\fboxsep-2\fboxrule\relax}{%
+    \textbf{Template-only page.} For the submission PDF, change \texttt{\string\showguidancetrue} to \texttt{\string\showguidancefalse} in \texttt{metadata.tex}. This switch removes this page and the blue writing guidance.}}
+\endgroup
+
+\vspace{4pt}
+
+
+\noindent\begin{minipage}[t]{0.485\linewidth}
+{\normalsize\bfseries\color{QueensBurgundy} Why the proposal is important}\par
+\begin{itemize}
+  \item \textbf{Alignment:} defines the problem, scope, deliverables, and success criteria for the group, stakeholders (supervisors), and teaching team.
+  \item \textbf{Feasibility:} shows that the approach, schedule, resources, budget, and risk controls support completion.
+  \item \textbf{Traceability:} connects requirements, specifications, and stakeholder objectives to the design, verification tests, and validation.
+\end{itemize}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.485\linewidth}
+{\normalsize\bfseries\color{QueensBurgundy} Formatting and submission}\par
+\textbf{Page setup:} letter paper, 1-inch margins, 12-point sans-serif body text, and 1.5 line spacing. Tables use 12 point font and may use single spacing.\par
+\textbf{Length:} Sections 1--6 have an eight-page maximum. The title page, executive summary, contents, references, and appendices are excluded. \par
+\textbf{Figures and tables:} number, caption, cite, and discuss each figure and table. Use appropriate units and significant digits. Choose relevant diagrams appropriately and ensure they convey your message with enough detail, using context provided in the body of the report. \par
+\textbf{Final check:} remove guidance; replace bracketed fields, placeholders, and the sample logo; update citations; confirm the page count; spell-check; and submit on \LearningPlatform.
+\end{minipage}
+
+\vspace{20pt}
+
+{\normalsize\bfseries\color{QueensBurgundy}
+Systems engineering in this proposal}\par
+
+The following definitions from the \emph{\ac{INCOSE} Systems Engineering Handbook},
+published by the \ac{INCOSE}, convey
+the \ac{SE} perspective used in this proposal.
+
+\begin{quote}
+\small
+
+\textbf{Systems engineering.}\par
+\itshape
+\ac{SE} is an interdisciplinary approach and means to enable
+the realization of successful systems. It focuses on defining customer needs
+and required functionality early in the development cycle, documenting
+requirements, and then proceeding with design synthesis and system validation
+while considering the complete problem: operations, cost and schedule,
+performance, training and support, test, manufacturing, and disposal. \ac{SE}
+considers both the business and the technical needs of all customers with the
+goal of providing a quality product that meets the user needs.
+
+\par\medskip
+\normalfont\textbf{Systems engineering effort.}\par
+\itshape
+\ac{SE} effort integrates multiple disciplines and specialty groups
+into a set of activities that proceed from concept to production and operation.
+SE considers both the business and the technical needs of all stakeholders with
+the goal of providing a quality system that meets their needs.
+
+\par\smallskip
+\normalfont\hfill
+International Council on Systems Engineering
+\cite[Sec.~1.5]{incose2015handbook}
+\end{quote}
+
+
+
+\vspace{4pt}
+{\normalsize\bfseries\color{QueensBurgundy} How the proposal is graded}\par
+
+The proposal will be graded with an eye towards \ac{MBSE}: diagrams, figures, and tables should convey technical information. The body of the text should introduce ideas, state their purpose, assumptions, and limitations, provide reasoning for decisions, and interpret the information shown. More generally, the proposal is graded based on appropriately communicating engineering design, using the rubric on the next page.
+
+\vfill
+\noindent\begin{minipage}[c]{0.10\linewidth}
+  \centering\includegraphics[width=0.55in,height=0.55in,keepaspectratio]{figures/sample\_logo.png}
+\end{minipage}%
+\begin{minipage}[c]{0.88\linewidth}
+  \textbf{Logo example:} \texttt{figures/sample\_logo.png} is a generic
+  sample. Set \texttt{\string\ProjectLogo} in \texttt{metadata.tex} to the
+  team's image path, or leave it empty for a cover without a logo.
+\end{minipage}
+\end{singlespace}
+\restoregeometry
+
+
+
+\begin{tabularx}{\linewidth}{@{}L{0.15\linewidth}Y@{}}
+
+\rowcolor{MidGray}
+\TableHeader{Dimension} & \TableHeader{Grading evidence} \\
+
+Problem, objectives, and scope &
+ Stakeholder, system-context, use-case, objective, or requirements models define the need, system boundary, actors, operating environment, measurable objectives, scope, assumptions, and constraints.
+ The executive summary and introduction explain the problem / motivation, project trajectory, deliverables, and how the proposed end product addresses the identified problem. \\
+
+Functional description and traceability &
+ Functional-decomposition, system block, interface, information-flow, signal-flow, state, activity, or sequence diagrams communicate system behaviour and structure. Consistent identifiers trace stakeholder needs $\rightarrow$ requirements $\rightarrow$ functions $\rightarrow$ components and interfaces.
+ The text adequately explains these models. \\
+
+Design, production, resources, and feasibility &
+ Physical and logical architectures,
+function-to-component allocation models, trade-study tables, dependency
+networks, work-breakdown structures, milestone or Gantt diagrams, risk models,
+and resource or budget models show an implementable approach.
+ The text justifies design choices, calculations,
+production methods, resources, budget, division of labour, contingencies, and
+the sequence of three to five credible milestones. \\
+
+Verification and validation &
+Requirement traceability matrix, test flow charts, experimental test setup figures, timing or sequence diagrams, and / or other figures show how evidence progresses from components to subsystems and the integrated system. The text describes each prototype, states test methods, equipment or software,
+conditions, measurable acceptance criteria, required evidence, and why the
+planned tests sufficiently verify requirements and validate stakeholder needs. \\
+
+Writing, formatting, and references &
+ Every diagram has a descriptive caption, readable labels, defined symbols, units, directions, interfaces, requirement identifiers, and cited sources where applicable. There is consistency in terminology and identifiers. The title page, executive summary, contents, formatting, citations, and references are complete, clear, and professionally presented. \\
+
+\bottomrule
+
+\end{tabularx}
+
+\clearpage
+
+

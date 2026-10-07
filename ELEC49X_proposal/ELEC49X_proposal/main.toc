@@ -1,0 +1,21 @@
+\contentsline {section}{Executive Summary}{i}{section*.4}%
+\contentsline {section}{Acronyms}{v}{section*.5}%
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Inefficiencies in unilateral phase detractors}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Retro-encabulator design for inverse reactive current}{1}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Deliverables: Power production, elimination of side-fumbling, and reduction of sinusoidal depleneration}{1}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Functional Description}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}System overview}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Interface and performance specifications}{2}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Risks and safety hazards}{2}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Design and Production Approach}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Retroencabulator development}{3}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Milestones and division of labor}{3}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Contingencies}{3}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Testing and Evaluation}{4}{section.4}%
+\contentsline {section}{\numberline {5}Resource Requirements}{5}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Scheduling access to resources}{5}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Materials and other resources}{5}{subsection.5.2}%
+\contentsline {section}{\numberline {6}Conclusion}{6}{section.6}%
+\contentsline {section}{\numberline {7}References}{7}{section.7}%
+\contentsline {section}{\numberline {A}Supporting Schedule and Technical Material}{8}{appendix.A}%

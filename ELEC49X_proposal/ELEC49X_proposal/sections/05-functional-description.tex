@@ -1,0 +1,39 @@
+\CourseSection{Functional Description}\label{sec:functional-description}
+\CourseSubsection{System overview}
+
+\Guidance{Use a set of diagrams to explain the system boundary, internal functions, operating behavior, inputs and outputs, signal types, protocols, direction of information flow, computing architecture, and / or anything else that applies. Write a short paragraph here that explains design decisions and references each figure, like Figure~\ref{fig:system}. Maintain labeling consistency (such as IDs, components, units, etc.) across tables and figures in this document. It's a good idea to reference these later in Section~\ref{sec:testing}.}
+
+\begin{figure}[htbp]
+\centering
+\FigurePlaceholder{Show the functional, physical, and logical diagrams.\\Label components, inputs, outputs, arrows, and signal types or protocols.}
+\caption{\TemplateField{System architecture and information flow. (This is a generic example. Use several diagrams to show the various relationships between system components.)}}
+\label{fig:system}
+\end{figure}
+
+\CourseSubsection{Interface and performance specifications}
+\Guidance{Give quantitative targets and tolerances with proper units. You can also use IDs to connect specifications with the tests in Section~\ref{sec:testing}. Write a short paragraph here giving context for these requirements, citing the IDs as necessary.}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.10\linewidth} L{\dimexpr0.4700000\linewidth-6.0000000\tabcolsep\relax} L{0.22\linewidth} L{0.21\linewidth}@{}}
+\caption{Preliminary system specifications.}\label{tab:proposal-specs}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Target} & \TableHeader{Tolerance} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Target} & \TableHeader{Tolerance} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+% Add and replace data rows below.
+IF-01 & \TemplateField{Interface} & \TemplateField{Value; unit} & \TemplateField{Range} \\
+\addlinespace[3pt]
+PF-01 & \TemplateField{Performance} & \TemplateField{Value; unit} & \TemplateField{Range} \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Risks and safety hazards}
+\Guidance{Identify relevant technical risks, health risks, and / or safety hazards, and indicate how you will manage these risks, and / or explain how system features and operating conditions are low-risk.}
+\clearpage

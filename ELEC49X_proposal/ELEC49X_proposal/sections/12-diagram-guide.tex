@@ -1,0 +1,394 @@
+% Engineering diagram selection guide for an EE/CompE capstone report.
+% Include this file with: \input{engineering-diagram-guide}
+% This section uses the template's \CourseSection, \CourseSubsection,
+% \Guidance, \TableHeader, \FigurePlaceholder, and L column macros.
+% It also assumes longtable, booktabs, xcolor, and setspace are loaded.
+
+\CourseSection{Engineering Diagram Selection Guide}\label{sec:diagram-guide}
+
+\Guidance{Use this section as a catalog for selecting engineering diagrams. Retain the diagram types that communicate the project requirements, architecture, behavior, implementation, analysis, verification, safety, and execution plan. Introduce every retained diagram in the report text and explain the engineering decisions represented by its elements and relationships. Use consistent subsystem names, interface names, requirement IDs, units, signal directions, and terminology across the complete report.}
+
+\CourseSubsection{Diagram selection principles}
+
+\Guidance{Each diagram should answer a defined engineering question. A context diagram answers what interacts with the system; a functional architecture answers what the system must do; a physical architecture answers where each function is implemented; a state or sequence diagram answers how behavior changes; a schematic answers how electrical components connect; and a test diagram answers how performance will be measured. Combine diagrams when the shared view remains legible and separate diagrams when each view serves a distinct audience or design question.}
+
+For each retained diagram, provide the following information where applicable:
+\begin{itemize}
+    \item a descriptive title and a unique \verb|\label|;
+    \item a clearly defined system boundary, scope, or level of abstraction;
+    \item labeled components, functions, states, nodes, or actors;
+    \item directed and labeled connections, transitions, messages, or flows;
+    \item signal type, protocol, voltage, current, power, frequency, sample rate, bit width, data rate, impedance, timing, or physical units;
+    \item operating assumptions, constraints, tolerances, and exceptional conditions;
+    \item requirement IDs, interface IDs, test IDs, or component reference designators when traceability is useful;
+    \item a caption that states the relationship or engineering conclusion represented by the figure.
+\end{itemize}
+
+\CourseSubsection{System definition and architecture diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{System definition and architecture diagrams.}\label{tab:system-architecture-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+System context & Defines the system boundary and external environment. & System under design, users, external devices, power sources, physical processes, networks, and labeled incoming and outgoing flows. & A motor controller connected to a battery, motor, encoder, operator, emergency stop, and service computer. \\
+\addlinespace[3pt]
+Use-case & Identifies capabilities delivered to users or external systems. & Actors, use cases, system boundary, associations, and included or extended behavior where those relationships clarify scope. & A technician configures sampling, an operator starts acquisition, and a cloud service receives telemetry. \\
+\addlinespace[3pt]
+Stakeholder map & Relates stakeholders to needs, decisions, and system effects. & Stakeholder groups, interests, authority, affected requirements, and communication paths. & Operators prioritize usability, technicians prioritize service access, and safety personnel approve protective functions. \\
+\addlinespace[3pt]
+Functional decomposition & Breaks a top-level mission into implementable functions. & Parent function, subordinate functions, hierarchy, inputs, outputs, and allocation identifiers when available. & Measure optical power decomposed into detection, amplification, filtering, conversion, calibration, storage, and display. \\
+\addlinespace[3pt]
+System block diagram & Summarizes the major subsystems and their relationships. & Subsystem blocks, labeled interfaces, flow direction, signal or energy type, and system boundary. & Sensor board, FPGA board, processor, power board, communications module, and host application. \\
+\addlinespace[3pt]
+Functional-flow block diagram & Shows the logical order, concurrency, and branching of functions. & Functions, sequence numbers, branches, parallel paths, entry and exit conditions, and feedback loops. & Initialize hardware, calibrate channels, acquire samples, process data, transmit results, and monitor faults. \\
+\addlinespace[3pt]
+Internal block or interface diagram & Defines connections among internal parts. & Parts, ports, connectors, interface names, directions, item flows, protocols, and electrical constraints. & MCU and FPGA connected by SPI, DMA request, reset, interrupt, clock, and shared power rails. \\
+\addlinespace[3pt]
+Logical architecture & Groups functions into technology-independent logical elements. & Logical components, responsibilities, provided and required services, data stores, and logical interfaces. & Acquisition service, control service, safety monitor, data logger, and communications service. \\
+\addlinespace[3pt]
+Physical architecture & Maps system responsibilities onto physical components. & Boards, processors, sensors, actuators, memories, connectors, enclosures, and allocation of functions to hardware. & Filtering assigned to an FPGA, supervisory control assigned to an MCU, and visualization assigned to a host PC. \\
+\addlinespace[3pt]
+Allocation diagram & Traces functions, requirements, or software onto implementation elements. & Source elements, target elements, allocation relationships, IDs, and unresolved allocations. & Requirement R-14 allocated to an ADC, anti-alias filter, FPGA decimator, and verification test T-14. \\
+\addlinespace[3pt]
+Interface control diagram & Provides a controlled definition of a subsystem boundary. & Interface ID, source, destination, connector or medium, pins, signals, voltage levels, protocol, units, timing, and ownership. & A 40-pin board connector carrying LVDS data, clocks, I\textsuperscript{2}C control, reset, and power. \\
+\addlinespace[3pt]
+Requirements traceability diagram & Connects stakeholder needs, requirements, design elements, and tests. & Requirement IDs, derivation, satisfaction relationships, verification methods, and test IDs. & A latency requirement satisfied by FPGA processing and verified by oscilloscope measurement. \\
+\addlinespace[3pt]
+System-of-systems diagram & Shows independently operated systems cooperating toward a broader capability. & Constituent systems, ownership, exchanged services, network boundaries, and operational dependencies. & Distributed sensor nodes, an edge gateway, a campus network, and a cloud analytics platform. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Electrical and electronic design diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Electrical and electronic design diagrams.}\label{tab:electrical-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Circuit schematic & Defines exact electrical connectivity and component relationships. & Reference designators, values, part numbers where relevant, nets, rails, grounds, connector pins, test points, and sheet references. & Photodiode transimpedance amplifier with bias, compensation, protection, and ADC driver. \\
+\addlinespace[3pt]
+Single-line diagram & Summarizes a multiphase or high-power electrical system with one line per circuit path. & Sources, buses, breakers, transformers, converters, loads, ratings, protection, and grounding. & Three-phase source feeding a rectifier, DC link, inverter, motor, and protective devices. \\
+\addlinespace[3pt]
+Power-tree diagram & Shows generation and distribution of supply rails. & Sources, protection, converters, regulators, switches, rails, loads, voltage ranges, current estimates, efficiency, and sequencing. & USB-C input converted to 12~V, 5~V, 3.3~V, 1.8~V, and FPGA core rails. \\
+\addlinespace[3pt]
+Energy-flow diagram & Shows conversion, storage, delivery, and recovery of energy. & Energy sources, conversion stages, storage elements, loads, losses, efficiencies, and bidirectional paths. & Battery, DC--DC converter, inverter, motor, mechanical load, and regenerative braking path. \\
+\addlinespace[3pt]
+Signal-chain diagram & Shows signal conditioning and conversion from source to destination. & Sensor or source, protection, gain, filtering, ADC or DAC, digital processing, sample rates, bandwidths, ranges, and noise-sensitive boundaries. & Photodiode, transimpedance amplifier, low-pass filter, ADC, FPGA filter, and Ethernet output. \\
+\addlinespace[3pt]
+Analog signal-flow diagram & Describes gain, filtering, feedback, and loading across an analog path. & Stages, gains, transfer functions, impedances, noise contributions, bandwidth, and signal ranges. & Microphone preamplifier followed by high-pass filtering, programmable gain, and audio ADC. \\
+\addlinespace[3pt]
+Grounding and isolation diagram & Defines reference domains, shielding, and safety or noise barriers. & Protective earth, chassis, analog and digital references, isolated domains, shields, return paths, and isolation ratings. & Isolated CAN interface between a high-voltage inverter controller and a low-voltage service tool. \\
+\addlinespace[3pt]
+Return-current path diagram & Shows the physical return path associated with a high-frequency or high-current signal. & Forward path, reference plane, discontinuities, stitching vias, connector returns, and current-loop area. & FPGA clock crossing a split plane and returning through a nearby stitching capacitor. \\
+\addlinespace[3pt]
+Timing diagram & Defines logic-level relationships and timing constraints. & Clock, reset, enable, chip select, address, data, interrupt, active levels, setup time, hold time, pulse width, and latency. & SPI transaction that starts an ADC conversion and reads a 24-bit result. \\
+\addlinespace[3pt]
+Waveform diagram & Communicates expected or measured voltage, current, or optical behavior over time. & Axes, units, trigger or reference event, operating condition, limits, annotations, and measurement location. & Gate voltage, switch-node voltage, and inductor current during a converter switching cycle. \\
+\addlinespace[3pt]
+PCB stack-up & Defines board layers and controlled electromagnetic geometry. & Copper layers, dielectric materials, thicknesses, reference planes, impedance targets, via structures, and total thickness. & Eight-layer mixed-signal board with dedicated analog and digital reference planes. \\
+\addlinespace[3pt]
+PCB floorplan or placement diagram & Communicates functional partitioning and component placement. & Board outline, connectors, major devices, power stages, analog, digital and RF regions, thermal zones, and keep-outs. & ADC placed beside its driver, FPGA beside DDR memory, and switching regulators separated from the analog front end. \\
+\addlinespace[3pt]
+Critical-routing diagram & Identifies nets requiring controlled geometry or matched routing. & Differential pairs, impedance, length or skew limits, termination, layer changes, return vias, and spacing constraints. & DDR byte lanes, PCIe pairs, LVDS ADC lanes, and reference clocks. \\
+\addlinespace[3pt]
+Wiring or harness diagram & Defines cable construction and point-to-point connectivity. & Connector IDs, pin mappings, wire gauges, colors, lengths, twists, shields, splices, labels, and routing constraints. & Enclosure harness connecting the controller, encoder, motor driver, fan, and emergency stop. \\
+\addlinespace[3pt]
+Connector pinout & Provides a compact definition of connector signals. & Pin numbers, names, direction, voltage, current limit, logic standard, mating connector, and reserved pins. & Debug connector carrying JTAG, UART, reset, 3.3~V, and ground. \\
+\addlinespace[3pt]
+RF or optical link budget & Accounts for gains, losses, noise, and operating margin. & Transmit power, coupling loss, path loss, gain, receiver sensitivity, noise figure, bandwidth, and margin. & Optical transmitter, fiber and connector losses, photoreceiver sensitivity, and required power margin. \\
+\addlinespace[3pt]
+Thermal-flow diagram & Shows heat generation and transfer to the environment. & Heat sources, dissipation, thermal resistance, junction and ambient limits, heat spreaders, heat sinks, airflow, and enclosure paths. & FPGA and regulators conducting heat through thermal vias to a heat spreader and forced-air path. \\
+\addlinespace[3pt]
+EMI or EMC coupling diagram & Identifies emission sources, coupling paths, and susceptible circuits. & Noise source, conductive and radiated paths, antennas, common-mode paths, filters, shields, and affected nodes. & Switching converter noise coupling through a cable shield into a low-level analog measurement channel. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Firmware, FPGA, and software diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Firmware, FPGA, and software diagrams.}\label{tab:computing-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Flowchart & Shows algorithmic sequence, decisions, and iteration. & Start and end points, operations, decisions, loops, inputs, outputs, and error paths. & Read sensors, validate ranges, calculate control output, update actuator, and log faults. \\
+\addlinespace[3pt]
+Activity diagram & Shows workflows with branching, concurrency, and responsibility partitions. & Actions, decisions, forks, joins, object flows, start and completion nodes, and swimlanes where ownership matters. & Firmware and host software concurrently acquire, process, display, and archive measurements. \\
+\addlinespace[3pt]
+State-machine diagram & Defines mode-dependent behavior. & Initial state, states, events, guards, actions, timeouts, fault states, safe states, and recovery transitions. & Reset, initialization, idle, acquisition, processing, communication, fault, and recovery. \\
+\addlinespace[3pt]
+Sequence diagram & Shows time-ordered messages among components. & Participants, messages, return values, asynchronous events, loops, alternatives, timeouts, retries, and concurrency. & MCU configures an ADC, arms DMA, receives an interrupt, and transfers a data block to a host. \\
+\addlinespace[3pt]
+Data-flow diagram & Shows creation, transformation, storage, and delivery of data. & External entities, processes, data stores, named data flows, and level of decomposition. & Camera frames pass through correction, feature extraction, buffering, compression, and network transmission. \\
+\addlinespace[3pt]
+Software component diagram & Defines software modules and dependencies. & Components, provided and required interfaces, APIs, libraries, services, drivers, and dependency direction. & Sensor driver, estimator, controller, logger, communications stack, and user-interface service. \\
+\addlinespace[3pt]
+Deployment diagram & Maps software artifacts onto execution nodes. & Processors, operating environments, firmware images, services, applications, storage, and communication links. & FPGA bitstream, MCU firmware, Linux service, desktop application, and cloud database. \\
+\addlinespace[3pt]
+Class diagram & Describes object-oriented software structure. & Classes, attributes, operations, inheritance, associations, composition, and multiplicity. & Device, Sensor, Channel, Calibration, Measurement, and Transport classes. \\
+\addlinespace[3pt]
+Entity--relationship diagram & Defines persistent data structure and relationships. & Entities, attributes, keys, relationships, cardinality, and constraints. & Devices, calibration records, test runs, channels, measurements, and users. \\
+\addlinespace[3pt]
+FPGA datapath diagram & Shows registered data transformations and pipeline structure. & Registers, arithmetic units, multiplexers, memories, pipeline stages, bus widths, valid-ready signals, and clock domains. & ADC samples pass through scaling, FIR filtering, decimation, FFT, detection, and packet framing. \\
+\addlinespace[3pt]
+FPGA control-path diagram & Shows logic that configures and sequences the datapath. & State machines, counters, enables, selectors, status flags, handshakes, reset behavior, and error handling. & Controller schedules buffer fills, FFT starts, result transfers, and overflow recovery. \\
+\addlinespace[3pt]
+Clock and reset architecture & Defines clock generation, distribution, domain crossings, and reset release. & Oscillators, PLLs, frequencies, clock domains, gating, CDC mechanisms, reset sources, synchronizers, and sequencing. & 100-MHz control domain, 250-MHz signal-processing domain, asynchronous ADC clock, and synchronized resets. \\
+\addlinespace[3pt]
+Memory map & Allocates processor or FPGA address space. & Address ranges, memory and peripheral regions, aliases, permissions, reserved areas, and bus ownership. & Flash, SRAM, DMA buffers, UART, timers, ADC control, and FPGA register window. \\
+\addlinespace[3pt]
+Register map & Defines individual control and status registers. & Offset, name, width, access type, reset value, bit fields, side effects, and description. & FPGA control register with enable, reset, interrupt mask, overflow, and operating-mode fields. \\
+\addlinespace[3pt]
+Interrupt architecture & Shows interrupt sources, priorities, and service relationships. & Sources, vectors, priorities, masking, preemption, handlers, latency targets, and shared-resource effects. & Emergency stop has priority over ADC completion, DMA completion, timer, UART, and background events. \\
+\addlinespace[3pt]
+Task-scheduling diagram & Shows concurrent or periodic software execution. & Tasks, periods, deadlines, priorities, execution times, dependencies, queues, mutexes, and processor utilization. & Control at 1~kHz, acquisition at 20~kHz, telemetry at 10~Hz, and diagnostics at 1~Hz. \\
+\addlinespace[3pt]
+Call graph & Shows function or procedure invocation relationships. & Functions, callers, callees, recursion where applicable, library boundaries, and critical call paths. & Interrupt handler invokes buffer management, filtering, fault checks, and event notification. \\
+\addlinespace[3pt]
+Cybersecurity trust-boundary diagram & Shows protected assets and crossings between trust zones. & Assets, users, devices, trust boundaries, authentication points, encrypted links, attack surfaces, and privileged flows. & Sensor node, maintenance port, gateway, local network, cloud API, credential store, and update service. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Control, signal-processing, and communications diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Control, signal-processing, and communications diagrams.}\label{tab:analysis-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Control-loop diagram & Defines closed-loop regulation and disturbance paths. & Reference, summing junctions, controller, actuator, plant, sensor, feedback, disturbances, noise, and controlled output. & Current and speed loops for a permanent-magnet motor drive. \\
+\addlinespace[3pt]
+Signal-flow graph & Represents linear relationships among system variables. & Nodes, directed branches, gains or transfer functions, feedback paths, and input-output variables. & Small-signal model of a converter control loop. \\
+\addlinespace[3pt]
+Bond graph & Represents energy exchange across multiple physical domains. & Effort and flow variables, sources, storage, dissipation, transformers, gyrators, and junctions. & Electromechanical model of a motor, shaft, gear train, and load. \\
+\addlinespace[3pt]
+Bode plot & Shows frequency-dependent magnitude and phase. & Frequency axis, magnitude, phase, operating condition, crossover frequencies, bandwidth, gain margin, phase margin, and design limits. & Compensated power-converter loop with required phase margin. \\
+\addlinespace[3pt]
+Nyquist plot & Assesses closed-loop stability from open-loop frequency response. & Complex-plane locus, direction, critical point, encirclement interpretation, and operating condition. & Robustness analysis of a plant with transport delay. \\
+\addlinespace[3pt]
+Pole--zero plot & Shows dynamic modes and stability. & Poles, zeros, stability boundary, dominant modes, damping, natural frequency, and parameter condition. & Digital controller and sampled plant poles in the (z)-plane. \\
+\addlinespace[3pt]
+Root-locus plot & Shows movement of closed-loop poles as gain changes. & Pole and zero locations, locus branches, gain values, damping lines, and selected operating point. & Controller-gain selection for a motor-position loop. \\
+\addlinespace[3pt]
+Time-response plot & Demonstrates transient or steady-state performance. & Input command or disturbance, output response, axes, units, rise time, overshoot, settling time, error, and limits. & Temperature controller response to a setpoint step and load disturbance. \\
+\addlinespace[3pt]
+Signal-processing pipeline & Shows ordered transformations applied to sampled data. & Sampling, buffering, windowing, filtering, transforms, feature extraction, estimation, data types, rates, and latency. & ADC samples pass through calibration, FIR filter, FFT, peak detection, and packetization. \\
+\addlinespace[3pt]
+Spectrum or spectral-density plot & Shows signal or noise content versus frequency. & Frequency axis, amplitude or density units, resolution bandwidth, window, averaging, noise floor, tones, and limits. & Output-noise density of a transimpedance amplifier. \\
+\addlinespace[3pt]
+Spectrogram & Shows spectral content changing with time. & Time, frequency, magnitude scale, window length, overlap, sample rate, and annotated events. & Motor vibration signature during acceleration and steady operation. \\
+\addlinespace[3pt]
+Constellation diagram & Shows received digital-modulation symbols in the I/Q plane. & Ideal symbols, measured samples, modulation type, EVM, decision boundaries, and identified impairments. & QPSK telemetry link showing phase error, gain imbalance, and noise. \\
+\addlinespace[3pt]
+Eye diagram & Shows aggregate timing and amplitude margin of a digital link. & Unit interval, eye height, eye width, crossing levels, jitter, noise, mask, and sampling point. & LVDS or optical receiver eye at the target data rate. \\
+\addlinespace[3pt]
+Channel model & Represents propagation, loss, interference, and noise. & Transmitter, medium, transfer function, attenuation, delay, multipath, noise, interference, and receiver. & Wireless sensor link through an indoor multipath channel. \\
+\addlinespace[3pt]
+Protocol-stack diagram & Shows communication responsibilities by layer. & Application, transport, network, link, and physical layers; protocols; interfaces; encapsulation; and security functions. & Sensor messages transported through MQTT, TCP, IP, Wi-Fi, and RF. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Mechanical integration and user-interface diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Mechanical integration and user-interface diagrams.}\label{tab:physical-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Mechanical assembly & Shows how physical parts fit and are retained. & Enclosure, boards, sensors, connectors, fasteners, mounting points, orientation, dimensions, and assembly references. & Controller PCB mounted above a power board with standoffs and airflow clearance. \\
+\addlinespace[3pt]
+Exploded view & Communicates part order and assembly sequence. & Separated parts, item numbers, orientation, fasteners, seals, and bill-of-material references. & Instrument enclosure, display window, keypad, PCB, battery, gasket, and rear cover. \\
+\addlinespace[3pt]
+Dimensioned drawing & Defines manufacturable geometry and tolerances. & Views, dimensions, tolerances, datums, hole patterns, materials, finish, and revision. & Front panel with display opening, connector cutouts, mounting holes, and labels. \\
+\addlinespace[3pt]
+Cable-routing diagram & Defines cable placement and mechanical constraints. & Routes, endpoints, lengths, bend radii, strain relief, clips, moving regions, heat sources, and interference zones. & Encoder and motor cables routed separately from analog sensor cables. \\
+\addlinespace[3pt]
+Enclosure-panel layout & Defines placement of user-accessible controls and connectors. & Controls, indicators, labels, connector types, spacing, accessibility, and safety markings. & Power switch, emergency stop, status LEDs, USB port, Ethernet jack, and fuse access. \\
+\addlinespace[3pt]
+User-interface wireframe & Shows screen organization and interaction controls. & Screens, navigation, controls, status indicators, alarms, units, data displays, and user actions. & Dashboard displaying live waveforms, channel configuration, recording status, and fault messages. \\
+\addlinespace[3pt]
+User-flow diagram & Shows the sequence of user actions and system responses. & Entry points, actions, decisions, feedback, error handling, and completion states. & Connect device, authenticate, select channels, calibrate, start test, review results, and export data. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Safety, reliability, cybersecurity, and troubleshooting diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Safety, reliability, cybersecurity, and troubleshooting diagrams.}\label{tab:risk-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Fishbone diagram & Organizes candidate causes of a defined problem. & Problem statement and cause categories such as hardware, software, methods, measurement, environment, and human factors. & Intermittent sensor readings traced to grounding, firmware timing, connector motion, calibration, EMI, and test procedure. \\
+\addlinespace[3pt]
+Fault-tree analysis & Shows logical combinations that produce a top failure. & Top event, intermediate events, basic events, AND and OR gates, common causes, and probability data when quantified. & Uncommanded motor motion caused by gate-driver, sensor, control, or communication failures. \\
+\addlinespace[3pt]
+Event tree & Shows possible outcomes following an initiating event. & Initiating event, successive protective functions, success and failure branches, outcomes, and probabilities where available. & Overcurrent followed by fuse operation, controller shutdown, contactor opening, and thermal containment. \\
+\addlinespace[3pt]
+Bow-tie diagram & Connects threats and preventive controls to a central event and its consequences. & Hazard, threats, preventive barriers, central event, recovery barriers, consequences, and barrier ownership. & Battery overtemperature, prevention controls, thermal runaway event, containment, shutdown, and user protection. \\
+\addlinespace[3pt]
+FMEA structure or failure-propagation map & Relates component failure modes to local and system effects. & Components, failure modes, causes, local effects, system effects, detection, severity, and mitigation. & ADC reference failure produces biased measurements detected by a calibration check and redundant reference monitor. \\
+\addlinespace[3pt]
+Reliability block diagram & Models success paths and redundancy. & Series elements, parallel paths, standby elements, mission duration, reliability values, and allocation boundaries. & Dual sensors with voting logic followed by a single controller and redundant communication links. \\
+\addlinespace[3pt]
+Hazard-control diagram & Shows how protective measures prevent, detect, and contain hazards. & Hazard sources, exposure paths, barriers, sensors, interlocks, protective devices, shutdown actions, and residual risk. & High-voltage source protected by insulation, enclosure, interlock, discharge resistor, and voltage indicator. \\
+\addlinespace[3pt]
+Troubleshooting decision tree & Provides a measurement-driven diagnostic procedure. & Starting symptom, checks, thresholds, branches, likely causes, corrective actions, and confirmation tests. & Device fails to boot: verify input voltage, rail sequence, reset, clock, flash access, and serial output. \\
+\addlinespace[3pt]
+Attack tree & Decomposes ways an adversary could achieve a defined objective. & Adversary goal, prerequisite events, AND and OR relationships, access assumptions, controls, and residual paths. & Unauthorized firmware execution through debug access, update service, credential theft, or memory corruption. \\
+\addlinespace[3pt]
+Data-flow diagram with trust boundaries & Supports structured threat modeling. & Processes, data stores, external entities, data flows, trust zones, authentication, encryption, and privilege transitions. & Firmware update travels from cloud service through gateway to bootloader and protected flash. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Verification, decision, and project-execution diagrams}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.17\linewidth} L{0.23\linewidth} L{0.32\linewidth} L{\dimexpr0.28\linewidth-6\tabcolsep\relax}@{}}
+\caption{Verification, decision, and project-execution diagrams.}\label{tab:execution-diagrams}\\
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Diagram} & \TableHeader{Purpose} & \TableHeader{Required content} & \TableHeader{EE or CompE example} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+V-model & Connects development decomposition with integration and verification. & Needs, requirements, architecture, detailed design, implementation, unit tests, integration tests, system tests, and acceptance tests. & Sensor requirement refined into analog and digital designs, then verified from circuit test through full-system calibration. \\
+\addlinespace[3pt]
+Test-setup diagram & Defines the physical and logical measurement arrangement. & Device under test, instruments, probes, fixtures, loads, supplies, connections, environmental conditions, stimulus, and recorded outputs. & Oscilloscope, current probe, programmable supply, electronic load, controller, and converter under test. \\
+\addlinespace[3pt]
+Verification coverage matrix & Shows how tests cover requirements and operating conditions. & Requirement IDs, test IDs, method, equipment, conditions, acceptance thresholds, status, and evidence location. & Sampling-rate, noise, latency, thermal, and fault-response requirements mapped to bench tests. \\
+\addlinespace[3pt]
+Coverage map & Visualizes exercised functions, states, interfaces, or code. & Covered elements, uncovered elements, coverage metric, test source, and target threshold. & State-transition coverage for reset, normal operation, communication loss, overrange, and recovery. \\
+\addlinespace[3pt]
+Work-breakdown structure & Decomposes project scope into deliverables and work packages. & Project, deliverables, subsystems, work packages, ownership, and completion criteria. & Hardware, FPGA, firmware, enclosure, integration, verification, and documentation branches. \\
+\addlinespace[3pt]
+Gantt chart & Shows task schedule, overlap, milestones, and ownership. & Tasks, owners, dates, durations, dependencies, milestones, reviews, procurement, and contingency. & Schematic review precedes PCB layout; firmware development overlaps board fabrication. \\
+\addlinespace[3pt]
+PERT or dependency network & Shows task order and critical path. & Activities, durations, precedence relationships, parallel paths, milestones, slack, and critical path. & Component selection, schematic, layout, fabrication, assembly, bring-up, integration, and testing. \\
+\addlinespace[3pt]
+Risk heat map & Prioritizes risks by likelihood and consequence. & Named risks, likelihood scale, impact scale, severity cells, owners, and mitigation status. & Long-lead FPGA, thermal shortfall, EMI failure, firmware integration delay, and calibration uncertainty. \\
+\addlinespace[3pt]
+Decision tree & Shows alternatives that depend on conditions or test outcomes. & Decision points, conditions, branches, outcomes, costs or consequences, and selected path. & Select wired or wireless communication based on range, bandwidth, power, and regulatory constraints. \\
+\addlinespace[3pt]
+Trade-study matrix & Compares alternatives using weighted criteria. & Alternatives, criteria, weights, scoring scale, scores, totals, assumptions, and sensitivity analysis. & Compare MCU, FPGA, SoC, and GPU solutions for latency, power, cost, development time, and tool support. \\
+\addlinespace[3pt]
+Design-review roadmap & Defines technical baselines and approval gates. & Review names, required artifacts, entrance criteria, exit criteria, decision authority, and planned dates. & Requirements review, preliminary design review, critical design review, test-readiness review, and final acceptance. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Recommended diagram sets by project type}
+
+\Guidance{Use the following combinations as starting points. Add specialized diagrams when they resolve a design question, document a controlled interface, support an analysis, or define a verification method.}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.20\linewidth} L{\dimexpr0.80\linewidth-2\tabcolsep\relax}@{}}
+\caption{Recommended starting diagrams by project type.}\label{tab:recommended-diagram-sets}\\
+\rowcolor{MidGray}
+\TableHeader{Project type} & \TableHeader{Recommended starting set} \\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Project type} & \TableHeader{Recommended starting set} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Embedded or IoT system & Context, use-case, functional architecture, interface diagram, power tree, state machine, sequence diagram, task schedule, network topology, trust-boundary diagram, and test setup. \\
+\addlinespace[3pt]
+FPGA or digital system & Context, functional architecture, FPGA datapath, FPGA control path, clock and reset architecture, memory map, register map, timing diagram, power tree, PCB floorplan, and verification coverage. \\
+\addlinespace[3pt]
+Analog or instrumentation system & Context, signal chain, circuit schematic, power tree, grounding and isolation, noise spectrum, PCB floorplan, thermal flow where applicable, calibration flow, and test setup. \\
+\addlinespace[3pt]
+Power-electronics system & Single-line diagram, energy flow, circuit schematic, power tree, control loop, state machine, switching waveforms, grounding and isolation, thermal flow, fault tree, hazard controls, and test setup. \\
+\addlinespace[3pt]
+Controls or robotics system & Context, use cases, functional architecture, control loops, state machine, sequence diagram, task schedule, electrical interconnection, mechanical assembly, hazard controls, and verification coverage. \\
+\addlinespace[3pt]
+Communications, RF, or photonics system & Context, signal chain, protocol stack, link budget, timing, spectrum, constellation or eye diagram, power tree, PCB or optical floorplan, thermal flow, and test setup. \\
+\addlinespace[3pt]
+Computer or software-intensive system & Context, use cases, logical architecture, data flow, software components, sequence diagrams, deployment, database model, network topology, trust boundaries, task schedule, and test coverage. \\
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Reusable figure placeholder}
+
+\Guidance{Copy this figure environment for each selected diagram. Replace the placeholder with the finished diagram, revise the caption to state what the figure demonstrates, and assign a unique label. Refer to the figure from the report text by using its LaTeX label.}
+
+\begin{figure}[htbp]
+\centering
+\FigurePlaceholder{Insert the selected engineering diagram.\\Label elements, connections, directions, interfaces, units, operating conditions, and relevant requirement or test IDs.}
+\caption{\TemplateField{State the engineering relationship, architecture, behavior, or result represented by this diagram.}}
+\label{fig:unique-name}
+\end{figure}
+
+\CourseSubsection{Diagram review checklist}
+
+Before submitting the report, verify that every retained diagram satisfies the following checks:
+\begin{itemize}
+    \item The diagram answers a stated engineering question and uses an appropriate level of abstraction.
+    \item Every symbol, line style, color, acronym, and abbreviation has an evident meaning or appears in a legend.
+    \item Every connection, transition, message, or flow has a label and direction where direction affects interpretation.
+    \item Numerical values include units, tolerances, ranges, or operating conditions where those quantities govern the design.
+    \item Names and identifiers agree with the requirements, schematics, source code, test procedures, and bill of materials.
+    \item The text explains the diagram's engineering significance and identifies the decisions or conclusions supported by it.
+    \item The caption remains meaningful when the figure is viewed separately from the surrounding paragraph.
+    \item Text, line weight, and plotted data remain legible at the final printed or displayed size.
+\end{itemize}

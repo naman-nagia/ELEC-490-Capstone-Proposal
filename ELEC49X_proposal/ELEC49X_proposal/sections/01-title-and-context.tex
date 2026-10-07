@@ -1,0 +1,39 @@
+% Cover information is centralized in metadata.tex.
+\thispagestyle{empty}
+{\large\bfseries\color{SmithBlue}\MakeUppercase{\FacultyName}\par}
+{\normalsize\InstitutionName\par}
+{\normalsize\DepartmentName\par}
+
+\vspace{0.52in}
+\PrintProjectLogo
+{\Large\bfseries\color{QueensBurgundy}\CourseShortCode\ Project \DocumentType\par}
+\vspace{9pt}
+{\LARGE\bfseries\color{QueensBurgundy}\ProjectTitle\par}
+\vspace{8pt}
+{\normalsize\AcademicTerms\par}
+\GuideLabel
+
+\vspace{12pt}
+\textbf{Submitted by Group} \GroupNumber
+\begin{TableBlock}
+\begin{tabularx}{\linewidth}{@{}Y L{0.19\linewidth} L{0.31\linewidth}@{}}
+\rowcolor{MidGray}
+\TableHeader{Group member} & \TableHeader{NetID} & \TableHeader{Student number} \\
+\TeamMembers
+\bottomrule
+\end{tabularx}
+\end{TableBlock}
+
+\begin{singlespace}
+\textbf{Faculty supervisor(s):} \FacultySupervisor\par
+\textbf{Supervisor email:} \SupervisorEmail\par
+\ifincludeindustrypartner
+\textbf{In association with:} \IndustryPartner\par
+\fi
+\textbf{Submission date:} \SubmissionDate\par
+\textbf{Version:} \DocumentVersion\par
+\end{singlespace}
+
+\vfill
+\Guidance{Template setup: replace the bracketed fields and develop each section into a written project proposal. Include the industry partner when applicable.}
+\clearpage
