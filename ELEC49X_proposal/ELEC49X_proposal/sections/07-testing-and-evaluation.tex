@@ -1,38 +1,45 @@
 \CourseSection{Testing and Evaluation}\label{sec:testing}
 
-\Guidance{Describe how the team expects to test the proposed system. The purpose
-of this section is to show that testing has been considered, not to provide a
-complete test procedure. (This you will do in the blueprint.) Use a diagram to communicate the overall test approach
-and briefly explain the expected evidence of success.}
+Testing will assess the correctness and reproducibility of the analysis pipeline, from data preparation through metric calculation and visualization. Unit tests will use controlled examples with known expected results, while integration tests will check that the processing stages work together correctly. Table~\ref{tab:testing-plan} summarizes the proposed tests and completion criteria.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
 \centering
-\FigurePlaceholder{Insert diagrms showing the test environments, and link IDs to the requirements and specifications.\\
-Show what will be tested, the main inputs and measurements,
-and how the results connect to the project requirements.}
-\caption{\TemplateField{Proposed system testing approach...be more specific here.}}
-\label{fig:test-approach}
-\end{figure}
-
+\caption{Proposed software verification tests.}
+\label{tab:testing-plan}
 \begin{singlespace}
-\begin{tabularx}{\linewidth}{@{}L{0.18\linewidth}YY@{}}
+\begin{tabularx}{\linewidth}{@{}L{0.20\linewidth}YY@{}}
 \rowcolor{MidGray}
-\TableHeader{Requirement} &
+\TableHeader{Component} &
 \TableHeader{Proposed test} &
-\TableHeader{Expected evidence of success} \\
+\TableHeader{Expected evidence of success}\\
 \midrule
 
-\TemplateField{ID} &
-\TemplateField{Briefly describe the planned test.} &
-\TemplateField{State the expected result or pass criterion.} \\
+Data preparation &
+Check sample records containing missing fields, duplicate content, and unusual formatting. &
+Records are retained, excluded, or flagged according to documented rules.\\
+\addlinespace[3pt]
+
+Metric calculations &
+Compare implemented calculations with manually calculated or independently verified examples. &
+Results match expected values within defined numerical tolerances.\\
+\addlinespace[3pt]
+
+Pipeline integration &
+Process a controlled sample through all analysis stages. &
+Record identifiers and calculated values remain consistent across intermediate and final outputs.\\
+\addlinespace[3pt]
+
+Reproducibility &
+Repeat the analysis using the same dataset, configuration, and software versions. &
+Tables and plotted values agree across repeated runs within defined numerical tolerances.\\
 
 \bottomrule
 \end{tabularx}
 \end{singlespace}
+\end{table}
 
-\Guidance{List as many verification and validation tests as you can think of at this time. Briefly identify any equipment, software, facilities, or special
-conditions expected to be needed. Explain how the tests will help
-determine whether the final system meets its main requirements (verification) and stakeholder
-needs (validation).}
+Evaluation will also consider whether the selected metrics and visualizations address the refined research questions. Sample outputs will be reviewed manually to confirm that labels, units, and interpretations agree with the underlying data. Any unsupported measurements or data limitations will be documented.
+
+Testing will use the team's development environment, a unit-testing framework, and controlled samples from the selected dataset. Identified defects will be corrected and affected tests rerun before the final analysis is accepted.
 
 \clearpage
