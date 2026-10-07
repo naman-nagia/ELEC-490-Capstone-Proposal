@@ -1,14 +1,23 @@
 \CourseSection{Design and Production Approach}\label{sec:design}
-\CourseSubsection{Retroencabulator development}
-\Guidance{Describe the sequence of design, analysis or simulation, prototyping, construction, integration, and refinement. Explain the team's preparation and the rationale for the approach. This is the 'development process' section.}
 
-\CourseSubsection{Milestones and division of labor}
-\Guidance{Plan at least five technical milestones. Give each milestone a date, an observable completion condition, and one responsible member as the primary lead. Course report and presentation deadlines do \textbf{not} belong here. This table tracks technical progress!}
+\CourseSubsection{Metric Development and Analysis}
+
+The following outlines the proposed methods for measuring size, churn, age, clone coverage, and readability, including the data requirements, calculation procedures, and validation approach for each metric.
+
+\noindent\textbf{Size.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Churn.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Age.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Clone Coverage.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Readability.} \TemplateField{Method and validation approach.}\par
+
+\CourseSubsection{Milestones and Division of Labor}
+
+Progress will be reviewed intermittently during Friday team meetings. Each member will be required to lead at least one milestone, coordinating the work and overseeing its timely completion. Responsibility for implementation and delivery will be shared across the team.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
-\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.5500000\linewidth-6.0000000\tabcolsep\relax} L{0.18\linewidth} L{0.18\linewidth}@{}}
-\caption{Technical milestones and ownership.}\label{tab:proposal-milestones}\\
+\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.55\linewidth-6\tabcolsep\relax} L{0.18\linewidth} L{0.18\linewidth}@{}}
+\caption{Proposed technical milestones and ownership.}\label{tab:proposal-milestones}\\
 \rowcolor{MidGray}
 \TableHeader{ID} & \TableHeader{Milestone} & \TableHeader{Due date} & \TableHeader{Lead}\\
 \midrule
@@ -16,21 +25,37 @@
 \endhead
 \bottomrule
 \endfoot
-% Add or replace data rows below.
-M1 & All six hydrocoptic marzelvanes functioning with the ambifacient lunar waneshaft  & \TemplateField{Date} & \TemplateField{Name} \\
+
+M1 & Dataset prepared and sample records checked.
+& Oct.\ 23, 2026 & Naman\\
 \addlinespace[3pt]
-M2 & Sidefumbling test complete & \TemplateField{Date} & \TemplateField{Name} \\
+
+M2 & Initial metric calculations checked against reference examples.
+& Nov.\ 13, 2026 & James\\
 \addlinespace[3pt]
-M3 & Tremie-pipe functioning with differential girdlespring  & \TemplateField{Date} & \TemplateField{Name} \\
+
+M3 & Supported metrics calculated; initial tables and plots generated.
+& Dec.\ 4, 2026 & Faiz\\
 \addlinespace[3pt]
-M4 &  Fluorescence score motion tested with dinglearm & \TemplateField{Date} & \TemplateField{Name} \\
+
+M4 & Results reviewed; focused research questions documented.
+& Jan.\ 29, 2027 & Noah\\
 \addlinespace[3pt]
-M5 & Testing and validation of retroencabulator complete & March 15, 2027 & all members \\
+
+M5 & Follow-up investigations evaluated; feasible extensions tested.
+& Feb.\ 26, 2027 & Naman\\
+\addlinespace[3pt]
+
+M6 & Final pipeline validated and results reproduced.
+& Mar.\ 12, 2027 & James\\
+
 \end{longtable}
 \end{singlespace}
 
-\Guidance{Add one or two explanatory sentences per milestone, and describe completion evidence and dependencies where applicable.}
+\CourseSubsection{Further Exploration and Contingencies}
 
-\CourseSubsection{Contingencies}
-\Guidance{Identify likely technical or scheduling obstacles, the trigger for taking corrective action, any alternative approaches, and the expected effect on time and cost.}
+Initial findings will guide M5, which may examine instruction structure, bundled scripts and references, or reuse patterns. Additional analyses will depend on relevance, data availability, and remaining time.
+
+Missing data or unreliable metrics will prompt revised methods or a narrower scope. Processing limits will be managed through batching or documented sampling to control time and costs. If delays threaten validation, tasks will be reassigned and optional investigations deferred. Resulting limitations will be documented.
+
 \clearpage
