@@ -1,12 +1,12 @@
 # Fdb version 4
-["biber main"] 1791430290.44479 "main.bcf" "main.bbl" "main" 1791430940.81889 0
-  "main.bcf" 1791430940 108437 2a5ac2969c26fbf9257e880fd3c372d1 "pdflatex"
+["biber main"] 1791430290.44479 "main.bcf" "main.bbl" "main" 1791431365.93829 0
+  "main.bcf" 1791431365 108437 2a5ac2969c26fbf9257e880fd3c372d1 "pdflatex"
   "references.bib" 1791430124 3654 6a8cacca703a5027733c4c91290b3108 ""
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1791430939.36806 "f:/Vscode/ELEC 490 Capstone/ELEC-490-Capstone-Proposal/ELEC49X_proposal/ELEC49X_proposal/main.tex" "main.pdf" "main" 1791430940.81945 0
+["pdflatex"] 1791431364.74108 "f:/Vscode/ELEC 490 Capstone/ELEC-490-Capstone-Proposal/ELEC49X_proposal/ELEC49X_proposal/main.tex" "main.pdf" "main" 1791431365.9388 0
   "C:/Users/naman/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1791404395 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/naman/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ectt1200.pk" 1791404398 24152 0aa96e15af5aaa3e378c180fa1b7c0d4 ""
   "C:/Users/naman/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1791404341 13402713 12d92dbffdf140cefab89db330ee1c39 ""
@@ -147,15 +147,15 @@
   "figures/490CapstoneProposalGeneralFigure1.pdf" 1791405438 71227 a67cb0c79813a4b23916d5cc06efcc2c ""
   "figures/MSR_logo.png" 1791401708 53309 61e2137c05939b8da56784190fd19deb ""
   "figures/readability-pilot.pdf" 1791430124 21627 6355aa30fa072da90572944e5916fd43 ""
-  "main.aux" 1791430940 8026 ce3d44381feeebb5c50adf137f0a1cd7 "pdflatex"
+  "main.aux" 1791431365 8026 ce3d44381feeebb5c50adf137f0a1cd7 "pdflatex"
   "main.bbl" 1791430315 3881 16855c8e174aa7cbfeceec68d6d8cef1 "biber main"
-  "main.lof" 1791430940 604 aeed5b5bfb870d115b62e2061e3fbf5b "pdflatex"
-  "main.lot" 1791430940 516 448c238b95cf322ac6153dafb5414057 "pdflatex"
-  "main.out" 1791430940 4388 b72d7d7715f5b4fa16d81e53721b0f9d "pdflatex"
-  "main.run.xml" 1791430940 2402 7a4d65c49456771f1cd032be2b50b135 "pdflatex"
+  "main.lof" 1791431365 604 aeed5b5bfb870d115b62e2061e3fbf5b "pdflatex"
+  "main.lot" 1791431365 516 448c238b95cf322ac6153dafb5414057 "pdflatex"
+  "main.out" 1791431365 4388 b72d7d7715f5b4fa16d81e53721b0f9d "pdflatex"
+  "main.run.xml" 1791431365 2402 7a4d65c49456771f1cd032be2b50b135 "pdflatex"
   "main.tex" 1791430124 921 29ad12e3e396c370470e180c86c32ed4 ""
-  "main.toc" 1791430940 1870 0c6483315e50833b15de79fdc2fa07bc "pdflatex"
-  "metadata.tex" 1791430290 1717 7c2077f6685c3ec460ecfc60fadb170a ""
+  "main.toc" 1791431365 1870 0c6483315e50833b15de79fdc2fa07bc "pdflatex"
+  "metadata.tex" 1791431364 1691 600a3d95ee37c22912cbacac26b006d4 ""
   "preamble.tex" 1791397882 4736 d9427a80e024959000abcd0d14230063 ""
   "sections/01-title-and-context.tex" 1791397882 1287 f52165205de1af8f61cf598ac302491c ""
   "sections/02-executive-summary.tex" 1791430124 3135 9476d83abb6af2f55ba345869575403f ""
