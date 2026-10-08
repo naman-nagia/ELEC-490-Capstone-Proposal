@@ -1,11 +1,10 @@
-\CourseSection{Resource Requirements}\label{sec:resources}
+\CourseSection{Resource Requirements}\label{sec}
 \CourseSubsection{Scheduling access to resources}
-\Guidance{Connect the technical milestones to laboratory space, equipment, fabrication, software, subscriptions, repositories, and other resources. Discuss access with the supervisor and include booking or lead-time requirements.}
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.14\linewidth} L{\dimexpr0.6100000\linewidth-4.0000000\tabcolsep\relax} L{0.25\linewidth}@{}}
-\caption{Resource access by milestone.}\label{tab:resource-access}\\
+\caption{Resource access by milestone.}\label{tab}\\
 \rowcolor{MidGray}
 \TableHeader{Milestone} & \TableHeader{Resource / source} & \TableHeader{Access date / lead time} \\
 \midrule
@@ -16,24 +15,27 @@
 \endhead
 \bottomrule
 \endfoot
-% Add or replace data rows below. Keep the matching column separators.
-M1 & \TemplateField{Tools and design resources} & \TemplateField{Date; lead time} \\
+
+M1 & GitSkills 13,000-skill sample, Python, GitHub repository, VS Code/Jupyter, data-processing libraries & Immediate, publicly available and open source \\
 \addlinespace[3pt]
-M2--M3 & \TemplateField{Lab; equipment; fabrication} & \TemplateField{Date; booking} \\
+
+M2--M3 & Full GitSkills dataset, local storage, Python analysis environment, source-code comparison dataset & Required before full-scale analysis, sufficient storage required \\
 \addlinespace[3pt]
-M4 & \TemplateField{Test equipment and facilities} & \TemplateField{Date; booking} \\
+
+M4--M5 & Statistical, text-analysis, tokenization, and visualization libraries, processed metric files & Required during metric calculation, validation, and full-dataset analysis \\
+\addlinespace[3pt]
+
+M6 & GitHub repository, processed results, plots, validation and reproducibility scripts & Continuous access through final validation and reporting \\
+
 \end{longtable}
 \end{singlespace}
 
-\Guidance{You can also relate each resource to the verification tests, or any other aspect of your report. Try to make use of labels / IDs so that they can be referenced consistently across the report.}
-
 \CourseSubsection{Materials and other resources}
-\Guidance{Estimate costs in \BudgetCurrency. Include quantities and the basis for estimates; identify resources supplied through existing access. Include tax, shipping, and contingency where applicable.}
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{\dimexpr0.5300000\linewidth-6.0000000\tabcolsep\relax} C{0.09\linewidth} L{0.18\linewidth} L{0.20\linewidth}@{}}
-\caption{Preliminary cost estimate (\BudgetCurrency).}\label{tab:proposal-budget}\\
+\caption{Preliminary cost estimate (\BudgetCurrency).}\label{tab}\\
 \rowcolor{MidGray}
 \TableHeader{Item / source} & \TableHeader{Qty.} & \TableHeader{Unit cost} & \TableHeader{Total} \\
 \midrule
@@ -44,17 +46,20 @@ M4 & \TemplateField{Test equipment and facilities} & \TemplateField{Date; bookin
 \endhead
 \bottomrule
 \endfoot
-% Add or replace data rows below. Keep the matching column separators.
-\TemplateField{Hardware / supplier} & \TemplateField{n} & \TemplateField{Cost} & \TemplateField{Cost} \\
+
+GitSkills dataset and official sample & 1 & \$0 & \$0 \\
 \addlinespace[3pt]
-\TemplateField{Software / service / access} & \TemplateField{n} & \TemplateField{Cost} & \TemplateField{Cost} \\
+
+Python, Git, VS Code/Jupyter, and open-source analysis libraries & 1 set & \$0 & \$0 \\
 \addlinespace[3pt]
-\TemplateField{Tax; shipping; contingency} &  &  & \TemplateField{Cost} \\
+
+GitHub repository and version-control access & 1 & \$0 & \$0 \\
 \addlinespace[3pt]
-\textbf{Estimated total} &  &  & \TemplateField{Total} \\
+
+Local data storage & 1 & \$0 & \$0 \\
+\addlinespace[3pt]
+
+\textbf{Estimated total} & & & \textbf{\$0} \\
+
 \end{longtable}
 \end{singlespace}
-
-
-\TemplateField{State the cost assumptions, access arrangements, and supervisor or industry contributions. Explain the funding and availability needed to complete the project.}
-\clearpage
