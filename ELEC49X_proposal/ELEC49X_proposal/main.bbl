@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 3.2 $
+% $ biblatex bbl format version 3.3 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -18,8 +18,8 @@
 
 
 \refsection{0}
-  \datalist[entry]{none/global//global/global}
-    \entry{incose2015handbook}{book}{}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{incose2015handbook}{book}{}{}
       \name{author}{1}{}{%
         {{hash=847e19d487ed6b11976a9dcb3628a7f6}{%
            family={{International Council on Systems Engineering}},
@@ -60,13 +60,16 @@
       }
       \strng{namehash}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{fullhash}{847e19d487ed6b11976a9dcb3628a7f6}
+      \strng{fullhashraw}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{bibnamehash}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{authorbibnamehash}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{authornamehash}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{authorfullhash}{847e19d487ed6b11976a9dcb3628a7f6}
+      \strng{authorfullhashraw}{847e19d487ed6b11976a9dcb3628a7f6}
       \strng{editorbibnamehash}{ed461c06b02f993aeb33f6d573fd4f35}
-      \strng{editornamehash}{a75b5eff8a07e1b505d0ddb6c57ba07e}
+      \strng{editornamehash}{e5cad046b99e76118c787d18f4583a91}
       \strng{editorfullhash}{ed461c06b02f993aeb33f6d573fd4f35}
+      \strng{editorfullhashraw}{ed461c06b02f993aeb33f6d573fd4f35}
       \field{sortinit}{1}
       \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
       \field{labelnamesource}{author}
@@ -77,38 +80,16 @@
       \field{year}{2015}
       \field{dateera}{ce}
     \endentry
-    \entry{kraft97rockwellEncabulator}{online}{}
-      \name{author}{1}{}{%
-        {{hash=b97076409949c3370d585f84edabe761}{%
-           family={{Rockwell Automation}},
-           familyi={R\bibinitperiod}}}%
+    \entry{msr2027MiningChallenge}{misc}{}{}
+      \list{organization}{1}{%
+        {International Conference on Mining Software Repositories}%
       }
-      \strng{namehash}{b97076409949c3370d585f84edabe761}
-      \strng{fullhash}{b97076409949c3370d585f84edabe761}
-      \strng{bibnamehash}{b97076409949c3370d585f84edabe761}
-      \strng{authorbibnamehash}{b97076409949c3370d585f84edabe761}
-      \strng{authornamehash}{b97076409949c3370d585f84edabe761}
-      \strng{authorfullhash}{b97076409949c3370d585f84edabe761}
       \field{sortinit}{2}
       \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
-      \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{day}{16}
-      \field{month}{1}
-      \field{note}{YouTube video, originally produced in 1997}
-      \field{title}{Rockwell Retro Encabulator}
-      \field{urlday}{8}
-      \field{urlmonth}{9}
-      \field{urlyear}{2026}
-      \field{year}{2008}
-      \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \verb{urlraw}
-      \verb https://youtu.be/RXJKdh1KZ0w
-      \endverb
-      \verb{url}
-      \verb https://youtu.be/RXJKdh1KZ0w
-      \endverb
+      \field{howpublished}{\url{https://conf.researchr.org/track/msr-2027/msr-2027-mining-challenge}}
+      \field{note}{Accessed: Oct. 7, 2026}
+      \field{title}{{MSR 2027 Mining Challenge: Call for Mining Challenge Papers}}
     \endentry
   \enddatalist
 \endrefsection

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  7 OCT 2026 16:35
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  7 OCT 2026 23:42
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1426,7 +1426,11 @@ File: t1phv.fd 2020/03/25 scalable font definitions for T1/phv.
 )
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 12.0pt on input line 4.
- (main.aux)
+ (main.aux
+
+LaTeX Warning: Label `tab' multiply defined.
+
+)
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -1515,12 +1519,8 @@ Package biblatex Info: Automatic encoding selection.
 \openout3 = `main.bcf'.
 
 Package biblatex Info: Trying to load bibliographic data...
-
-
-Package biblatex Warning: File 'main.bbl' is wrong format version - expected 3.3.
-
 Package biblatex Info: ... file 'main.bbl' found.
-(main.bbl)
+ (main.bbl)
 Package biblatex Info: Reference section=0 on input line 4.
 Package biblatex Info: Reference segment=0 on input line 4.
 Package hyperref Info: Link coloring ON on input line 4.
@@ -1528,218 +1528,12 @@ Package hyperref Info: Link coloring ON on input line 4.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
- (sections/00-template-guide.tex
-Underfull \hbox (badness 10000) in paragraph at lines 23--4
-[]\T1/phv/m/n/12 author1hash=847e19d487ed6b11976a9dcb3628a7f6family=International Coun-cil on
- []
-
-
-Overfull \hbox (121.19217pt too wide) in paragraph at lines 23--4
-\T1/phv/m/n/12 Sys-tems En-gi-neer-ing, fam-i-lyi=I.                      au-thor1hash=b97076409949c3370d585f84edabe761family=Rockwell
- []
-
-[1
-
-{C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}]
-*geometry* verbose mode - [ newgeometry ] result:
-* driver: pdftex
-* paper: letterpaper
-* layout: <same size as paper>
-* layoutoffset:(h,v)=(0.0pt,0.0pt)
-* modes: 
-* h-part:(L,W,R)=(50.58878pt, 513.11745pt, 50.58878pt)
-* v-part:(T,H,B)=(39.74872pt, 715.47255pt, 39.74872pt)
-* \paperwidth=614.295pt
-* \paperheight=794.96999pt
-* \textwidth=513.11745pt
-* \textheight=715.47255pt
-* \oddsidemargin=-21.68121pt
-* \evensidemargin=-21.68121pt
-* \topmargin=-66.52127pt
-* \headheight=16.0pt
-* \headsep=18.0pt
-* \topskip=12.0pt
-* \footskip=28.0pt
-* \marginparwidth=44.0pt
-* \marginparsep=10.0pt
-* \columnsep=10.0pt
-* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
-* \hoffset=0.0pt
-* \voffset=0.0pt
-* \mag=1000
-* \@twocolumnfalse
-* \@twosidefalse
-* \@mparswitchfalse
-* \@reversemarginfalse
-* (1in=72.27pt=25.4mm, 1cm=28.453pt)
-
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.0pt on input line 7.
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 20.74pt on input line 14.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 20.74pt on input line 14.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 10.0pt on input line 24.
-
-Underfull \hbox (badness 10000) in paragraph at lines 24--24
-[]\T1/phv/b/n/10 Template-only page. \T1/phv/m/n/10 For the sub-mis-sion PDF, change \T1/cmtt/m/n/10 \showguidancetrue \T1/phv/m/n/10 to \T1/cmtt/m/n/10 \showguidancefalse \T1/phv/m/n/10 in
- []
-
-LaTeX Font Info:    Trying to load font information for U+msa on input line 24.
-(C:\Users\naman\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 24.
- (C:\Users\naman\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 12.0pt on input line 31.
-LaTeX Font Info:    Trying to load font information for TS1+phv on input line 33.
- (C:\Users\naman\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1phv.fd
-File: ts1phv.fd 2020/03/25 scalable font definitions for TS1/phv.
-)
-LaTeX Font Info:    Font shape `TS1/phv/m/n' will be
-(Font)              scaled to size 10.0pt on input line 33.
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--34
-[]\T1/phv/b/n/10 Alignment: \T1/phv/m/n/10 de-fines the prob-lem, scope, de-liv-er-ables,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 33--34
-\T1/phv/m/n/10 and suc-cess cri-te-ria for the group, stake-hold-ers
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 34--35
-[]\T1/phv/b/n/10 Feasibility: \T1/phv/m/n/10 shows that the ap-proach, sched-ule,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 34--35
-\T1/phv/m/n/10 re-sources, bud-get, and risk con-trols sup-port com-ple-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--36
-[]\T1/phv/b/n/10 Traceability: \T1/phv/m/n/10 con-nects re-quire-ments, spec-i-fi-ca-tions,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 35--36
-\T1/phv/m/n/10 and stake-holder ob-jec-tives to the de-sign, ver-i-fi-ca-tion
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 40--40
-[]\T1/phv/b/n/10 Page setup: \T1/phv/m/n/10 let-ter pa-per, 1-inch mar-gins, 12-point
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 40--40
-\T1/phv/m/n/10 sans-serif body text, and 1.5 line spac-ing. Ta-bles use 12
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-[]\T1/phv/b/n/10 Length: \T1/phv/m/n/10 Sec-tions 1--6 have an eight-page max-i-mum.
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 41--41
-\T1/phv/m/n/10 The ti-tle page, ex-ec-u-tive sum-mary, con-tents, ref-er-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--42
-[]\T1/phv/b/n/10 Figures and ta-bles: \T1/phv/m/n/10 num-ber, cap-tion, cite, and dis-cuss
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--42
-\T1/phv/m/n/10 each fig-ure and ta-ble. Use ap-pro-pri-ate units and sig-nif-i-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--42
-\T1/phv/m/n/10 cant dig-its. Choose rel-e-vant di-a-grams ap-pro-pri-ately and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 42--42
-\T1/phv/m/n/10 en-sure they con-vey your mes-sage with enough de-tail,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--44
-[]\T1/phv/b/n/10 Final check: \T1/phv/m/n/10 re-move guid-ance; re-place brack-eted
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--44
-\T1/phv/m/n/10 fields, place-hold-ers, and the sam-ple logo; up-date ci-ta-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 43--44
-\T1/phv/m/n/10 tions; con-firm the page count; spell-check; and sub-mit
- []
-
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 51.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 10.0pt on input line 51.
-Package acronym Info: Label `acro:INCOSE' newly defined as it shall be overridden
-although it is yet undefined on input line 51.
-
-Package acronym Warning: Acronym INCOSE is not defined on input line 51.
-
-LaTeX Font Info:    Font shape `T1/phv/b/it' in size <10> not available
-(Font)              Font shape `T1/phv/b/sl' tried instead on input line 51.
-LaTeX Font Info:    Font shape `T1/phv/b/sl' will be
-(Font)              scaled to size 10.0pt on input line 51.
-
-Package acronym Warning: Acronym INCOSE is not defined on input line 51.
-
-
-Package acronym Warning: Acronym INCOSE is not defined on input line 52.
-
-Package acronym Info: Label `acro:SE' newly defined as it shall be overridden
-although it is yet undefined on input line 53.
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 10.95pt on input line 56.
-LaTeX Font Info:    Font shape `T1/phv/b/n' will be
-(Font)              scaled to size 10.95pt on input line 58.
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <10.95> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 59.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 10.95pt on input line 59.
-
-LaTeX Warning: Citation 'incose2015handbook' on page 2 undefined on input line 80.
-
-Package acronym Info: Label `acro:MBSE' newly defined as it shall be overridden
-although it is yet undefined on input line 88.
-<figures/MSR_logo.png, id=98, 196.48407pt x 203.25937pt>
-File: figures/MSR_logo.png Graphic file (type png)
-<use figures/MSR_logo.png>
-Package pdftex.def Info: figures/MSR_logo.png  used on input line 92.
-(pdftex.def)             Requested size: 38.42366pt x 39.74861pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 95--98
-[]\T1/phv/b/n/10 Logo ex-am-ple: \T1/cmtt/m/n/10 figures/MSR_logo.png \T1/phv/m/n/10 is the cur-rent team logo. Set \T1/cmtt/m/n/10 \ProjectLogo \T1/phv/m/n/10 in \T1/cmtt/m/n/10 metadata.tex
- []
-
-[2
-
- <./figures/MSR_logo.png>] [3
-
-]) (sections/01-title-and-context.tex
+ (sections/01-title-and-context.tex
 LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 14.4pt on input line 3.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 14.4pt on input line 3.
+<figures/MSR_logo.png, id=91, 196.48407pt x 203.25937pt>
 File: figures/MSR_logo.png Graphic file (type png)
 <use figures/MSR_logo.png>
 Package pdftex.def Info: figures/MSR_logo.png  used on input line 8.
@@ -1748,18 +1542,33 @@ LaTeX Font Info:    Font shape `T1/phv/m/n' will be
 (Font)              scaled to size 17.28pt on input line 9.
 LaTeX Font Info:    Font shape `T1/phv/b/n' will be
 (Font)              scaled to size 17.28pt on input line 9.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 20.74pt on input line 11.
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 20.74pt on input line 11.
 
 Overfull \hbox (5.35161pt too wide) in paragraph at lines 11--11
 [][]\T1/phv/b/n/20.74 [Mining Soft-ware Rep-pos-i-to-ries Git-Skills Dataset
  []
 
-LaTeX Font Info:    Font shape `T1/phv/m/it' in size <12> not available
-(Font)              Font shape `T1/phv/m/sl' tried instead on input line 38.
-LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
-(Font)              scaled to size 12.0pt on input line 38.
-[1
+LaTeX Font Info:    Font shape `T1/phv/b/n' will be
+(Font)              scaled to size 12.0pt on input line 17.
+(C:\Users\naman\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd) (C:\Users\naman\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd) [1
 
-]) (sections/02-executive-summary.tex [1
+{C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc} <./figures/MSR_logo.png>]) (sections/02-executive-summary.tex
+LaTeX Font Info:    Font shape `T1/phv/m/it' in size <12> not available
+(Font)              Font shape `T1/phv/m/sl' tried instead on input line 4.
+LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
+(Font)              scaled to size 12.0pt on input line 4.
+
+
+LaTeX Warning: Citation 'gitskills2027' on page 1 undefined on input line 4.
+
+Package acronym Info: Label `acro:MSR' newly defined as it shall be overridden
+although it is yet undefined on input line 4.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 10.95pt on input line 10.
+[1
 
 ]) (sections/03-table-of-contents.tex (main.toc)
 \tf@toc=\write5
@@ -1782,54 +1591,62 @@ LaTeX Font Info:    Font shape `T1/phv/m/sl' will be
 ]) (sections/03a-acronyms.tex [5
 
 
-]) (sections/04-introduction.tex
-
-LaTeX Warning: Citation 'msr2027MiningChallenge' on page 1 undefined on input line 5.
-
-
-pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.15 \clearpage
-                [1
+]) (sections/04-introduction.tex [1
 
 ]) (sections/05-functional-description.tex
 
 pdfTeX warning: pdflatex (file ./figures/490CapstoneProposalGeneralFigure1.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<figures/490CapstoneProposalGeneralFigure1.pdf, id=187, 1156.32pt x 650.43pt>
+<figures/490CapstoneProposalGeneralFigure1.pdf, id=179, 1156.32pt x 650.43pt>
 File: figures/490CapstoneProposalGeneralFigure1.pdf Graphic file (type pdf)
 <use figures/490CapstoneProposalGeneralFigure1.pdf>
 Package pdftex.def Info: figures/490CapstoneProposalGeneralFigure1.pdf  used on input line 14.
 (pdftex.def)             Requested size: 469.75502pt x 264.23653pt.
 
-pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.48 \end{longtable}
-                     [2
+LaTeX Warning: Citation 'krippendorff2004' on page 2 undefined on input line 51.
 
- <./figures/490CapstoneProposalGeneralFigure1.pdf>]
-pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has been already used, duplicate ignored
-<to be read again> 
-                   \relax 
-l.55 \clearpage
-                [3]) (sections/06-design-and-production.tex [4
+[2
 
-] [5]) (sections/07-testing-and-evaluation.tex [6
+ <./figures/490CapstoneProposalGeneralFigure1.pdf>] [3]) (sections/06-design-and-production.tex [4
 
-]) (sections/08-resource-requirements.tex [7
+]
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 8.0pt on input line 30.
+LaTeX Font Info:    Font shape `T1/phv/m/n' will be
+(Font)              scaled to size 6.0pt on input line 30.
 
-]) (sections/09-conclusion.tex [8
+
+LaTeX Warning: Citation 'flesch1948' on page 5 undefined on input line 36.
+
+
+LaTeX Warning: Citation 'kincaid1975' on page 5 undefined on input line 36.
+
+
+LaTeX Warning: Citation 'buse2010readability' on page 5 undefined on input line 36.
+
+
+LaTeX Warning: Citation 'posnett2011simpler' on page 5 undefined on input line 36.
+
+[5] [6]) (sections/07-testing-and-evaluation.tex [7
+
+]) (sections/08-resource-requirements.tex) (sections/09-conclusion.tex [8
 
 ]) (sections/10-references.tex
+LaTeX Font Info:    Font shape `T1/phv/m/sc' will be
+(Font)              scaled to size 12.0pt on input line 5.
+ [9] [10]) (sections/11-appendices.tex) (sections/11b-readability-pilot.tex [11
 
-LaTeX Warning: Empty bibliography on input line 5.
+]
 
-[9
+LaTeX Warning: Citation 'textstat' on page 12 undefined on input line 10.
 
-]) (sections/11-appendices.tex) [10
+<figures/readability-pilot.pdf, id=246, 505.89pt x 195.129pt>
+File: figures/readability-pilot.pdf Graphic file (type pdf)
+<use figures/readability-pilot.pdf>
+Package pdftex.def Info: figures/readability-pilot.pdf  used on input line 14.
+(pdftex.def)             Requested size: 469.75502pt x 181.19415pt.
+) [12
 
-] 
+ <./figures/readability-pilot.pdf>] 
 enddocument/afterlastpage (AED): lastpage setting LastPage.
 (main.aux)
  ***********
@@ -1840,8 +1657,11 @@ L3 programming layer <2026-09-09>
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 38403956FC1F1927F8303FD2B51EB33E;4214.
+(rerunfilecheck)             Checksum: B72D7D7715F5B4FA16D81E53721B0F9D;4388.
 
 Package biblatex Warning: Please (re)run Biber on the file:
 (biblatex)                main
@@ -1852,17 +1672,17 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22294 strings out of 467392
- 391004 string characters out of 5405639
- 1243158 words of memory out of 5000000
- 51249 multiletter control sequences out of 15000+600000
- 678698 words of font info for 99 fonts, out of 8000000 for 9000
+ 22251 strings out of 467392
+ 390799 string characters out of 5405639
+ 1245713 words of memory out of 5000000
+ 51215 multiletter control sequences out of 15000+600000
+ 667775 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 67i,12n,86p,1288b,915s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\naman\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk> <C:\Users\naman\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1000.pk><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvbo8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on main.pdf (19 pages, 458852 bytes).
+ 67i,12n,86p,1288b,1456s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ <C:\Users\naman\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on main.pdf (18 pages, 487712 bytes).
 PDF statistics:
- 333 PDF objects out of 1000 (max. 8388607)
- 49 named destinations out of 1000 (max. 500000)
- 179 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 382 PDF objects out of 1000 (max. 8388607)
+ 52 named destinations out of 1000 (max. 500000)
+ 192 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -2374,8 +2374,15 @@
     <bcf:datasource type="file" datatype="bibtex" glob="false">references.bib</bcf:datasource>
   </bcf:bibdata>
   <bcf:section number="0">
-    <bcf:citekey order="1" intorder="1">incose2015handbook</bcf:citekey>
+    <bcf:citekey order="1" intorder="1">gitskills2027</bcf:citekey>
     <bcf:citekey order="2" intorder="1">msr2027MiningChallenge</bcf:citekey>
+    <bcf:citekey order="3" intorder="1">msr2027MiningChallenge</bcf:citekey>
+    <bcf:citekey order="4" intorder="1">krippendorff2004</bcf:citekey>
+    <bcf:citekey order="5" intorder="1">flesch1948</bcf:citekey>
+    <bcf:citekey order="5" intorder="2">kincaid1975</bcf:citekey>
+    <bcf:citekey order="6" intorder="1">buse2010readability</bcf:citekey>
+    <bcf:citekey order="6" intorder="2">posnett2011simpler</bcf:citekey>
+    <bcf:citekey order="7" intorder="1">textstat</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

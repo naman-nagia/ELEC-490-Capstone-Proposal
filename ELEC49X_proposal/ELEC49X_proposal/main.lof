@@ -1,1 +1,2 @@
-\contentsline {figure}{\numberline {1}{\ignorespaces Data flow from the GitSkills tables through the Python pipeline to the final metrics file.}}{2}{figure.caption.6}%
+\contentsline {figure}{\numberline {1}{\ignorespaces Data flow from the GitSkills tables through the Python pipeline to the final metrics file.}}{2}{figure.caption.4}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Readability pilot on 8,314 English skills from the 13,000-skill GitSkills sample. (a)~Flesch--Kincaid grade of the body prose, with the Markdown converted to sentences and as raw text. (b)~Body grade under four formulas, and Flesch--Kincaid grade of the front-matter description. Boxes show the interquartile range, and whiskers extend to 1.5 times the IQR.}}{12}{figure.caption.5}%
