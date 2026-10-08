@@ -27,7 +27,15 @@ Clone coverage measure how much content in a dataset is duplicated. In the GitSk
 {\text{Total number of skill occurrences}}
 \times 100.
 ]\par
-\noindent\textbf{Readability.} \TemplateField{Method and validation approach.}\par
+\noindent\textbf{Readability.}
+Readability is classically measured in two separate ways. Formulas such as the Flesch--Kincaid grade level score English prose by sentence and word length~\cite{flesch1948,kincaid1975}, while code readability models score code from features such as line count and token entropy~\cite{buse2010readability,posnett2011simpler}.
+Neither fits a skill on its own, so we split each skill into the same three parts used for size and score each part with the instrument designed for it.
+The body's prose and the description are scored with the Flesch--Kincaid grade, with three related formulas as a cross-check.
+The body's code blocks are scored with Posnett's model, which is also applied, in equal-length snippets, to the scripts bundled next to the skill, so skill code and ordinary code are compared on the same scale.
+Before scoring, the Markdown has to be turned into real sentences. Otherwise each bullet list counts as one long sentence, and in our pilot on the 13,000-skill sample this raised the median skill's grade by 3.4 levels (Appendix~\ref{app:readability-pilot}).
+The formulas only work for English, so non-English skills (about 21\% of the pilot) are counted but not scored.
+In the pilot, the median skill body read at grade 8.6, while descriptions read at grade 12.7.
+To validate, two team members will independently rate 100 skills, stratified by grade, on a five-point scale. The formula is accepted if the raters agree with each other (PF-06) and its scores track their average rating (PF-05). If it fails, readability will be reported only as a measure of text complexity, not of quality.\par
 
 \CourseSubsection{Milestones and Division of Labor}
 
