@@ -3,7 +3,7 @@
 
 Since this is a dataset analysis project, the system itself is fairly simple, as shown in Figure~\ref{fig:system}.
 GitSkills is distributed as a single SQLite database, with a Parquet copy of each table, and holds four tables: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}.
-The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
+The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, textstat for readability formulas, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
 A pre-processing script first transforms it for the metric scripts and filters out files that are not genuine skills (\texttt{filename}, \texttt{location\_class}, \texttt{frontmatter\_valid}).
 The cleaned data then passes to a separate calculation script for each metric, whose methods are described in Section~\ref{sec:design}.
 Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
@@ -45,6 +45,10 @@ PF-02 & Peak memory use, kept low through batching & $\leq$ 16 GB & +4 GB \\
 PF-03 & Re-running the pipeline reproduces the same metrics & Identical output & 0 differences \\
 \addlinespace[3pt]
 PF-04 & Precision of cross-copy lineage links on the hand-labelled sample & $\geq$ 0.90 & $-$0.05 \\
+\addlinespace[3pt]
+PF-05 & Spearman correlation between Flesch--Kincaid grade and the mean human rating on the 100-skill readability sample & $|\rho| \geq$ 0.5 & $-$0.1 \\
+\addlinespace[3pt]
+PF-06 & Agreement between the two readability raters (Krippendorff's $\alpha$~\cite{krippendorff2004}) & $\geq$ 0.80 & $-$0.13 \\
 \end{longtable}
 \end{singlespace}
 
