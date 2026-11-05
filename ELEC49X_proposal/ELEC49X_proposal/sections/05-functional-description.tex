@@ -9,6 +9,22 @@ The cleaned data then passes to a separate calculation script for each metric, w
 Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
 The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
 
+\medskip
+
+\noindent\textbf{Age Calculation Module.}
+
+The age module calculates how long the SKILL.md file has been inside the repository. It uses the \texttt{first\_commit\_at} timestamp and a fixed dataset collection date to calculate the age of the skill. The purpose of the fixed dataset collection date is to assure consistency across the dataset. The module will output the calculated age value (displayed in days). This value will be passed to the output stage for analysis and potential visualization. Records with missing or invalid values in the texttt{first\_commit\_at} field will not be imputed but will be flagged instead. The use of the first commit date has been selected to determine age over the latest commit date as the team looks to measure how long the skill has existed rather than how long since the skills final edit.
+
+\medskip
+
+\noindent\textbf{Clone Coverage Calculation Module.}
+
+The Clone Coverage module measures how frequently identical or substantially similar AI agent skills appear within the GitSkills dataset. Exact clones are identified by grouping skill occurrences with matching \texttt{file\_sha} values. Groups containing multiple occurrences are classified as exact clone groups, and exact clone coverage is calculated as the percentage of eligible skill occurrences belonging to these groups, including the first occurrence.
+
+Near-clones will be identified using the actual skill text stored in the \texttt{content} field, regardless of repository or filename. The \texttt{dedup\_primary} field will be used to select representatives of exact-content groups, while \texttt{content\_fetched} and \texttt{content\_sha\_ok} will verify text availability and integrity. Skill text will be divided into overlapping three-token sequences (shingles), and MinHash signatures with locality-sensitive hashing (LSH) will identify potentially similar pairs. These pairs will then be evaluated using Jaccard similarity, calculated as the number of shared shingles divided by the total number of unique shingles across both skills.
+
+Pairs with different file hashes and Jaccard similarity of at least 80\% will be linked as near-clones. This threshold follows published text deduplication research and requires substantial textual overlap while allowing minor modifications. Qualifying relationships will be combined into connected clone groups, allowing multiple related skills to be grouped together even when not every pair exceeds the threshold. These groups will be mapped back to the original skill occurrences, and expanded clone coverage will be calculated as the percentage of eligible occurrences belonging to groups containing multiple skills. Exact and expanded clone coverage will be reported separately, with missing or invalid data handled separately.
+
 \CourseSubsection{Interface and performance specifications}
 
 \begin{singlespace}
