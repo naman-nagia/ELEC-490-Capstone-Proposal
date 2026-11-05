@@ -51,7 +51,7 @@ Activity and token churn go into the churn columns, while each link from a paren
 \label{fig:age-function}
 \end{figure}
 
-The age module calculates how long the SKILL.md file has been inside the repository. It uses the \texttt{first\_commit\_at} timestamp and a fixed dataset collection date to calculate the age of the skill. The purpose of the fixed dataset collection date is to assure consistency across the dataset. The module will output the calculated age value (displayed in days). This value will be passed to the output stage for analysis and potential visualization. Records with missing or invalid values in the texttt{first\_commit\_at} field will not be imputed but will be flagged instead. The use of the first commit date has been selected to determine age over the latest commit date as the team looks to measure how long the skill has existed rather than how long since the skills final edit.
+The age module calculates how long the SKILL.md file has been inside the repository. It uses the \texttt{first\_commit\_at} timestamp and a fixed dataset collection date to calculate the age of the skill. The purpose of the fixed dataset collection date is to assure consistency across the dataset. The module will output the calculated age value (displayed in days). This value will be passed to the output stage for analysis and potential visualization. Records with missing or invalid values in the \texttt{first\_commit\_at} field will not be imputed but will be flagged instead. The use of the first commit date has been selected to determine age over the latest commit date as the team looks to measure how long the skill has existed rather than how long since the skills final edit.
 
 \medskip
 
