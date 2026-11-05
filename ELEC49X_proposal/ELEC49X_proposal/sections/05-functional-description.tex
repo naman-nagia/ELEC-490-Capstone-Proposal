@@ -1,20 +1,13 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-Since this is a dataset analysis project, the system itself is fairly simple, as shown in Figure~\ref{fig:system}.
+The pipeline introduced in Figure~\ref{fig:system} comprises data preparation, metric calculation, and output transformation.
 GitSkills is distributed as a single SQLite database, with a Parquet copy of each table, and holds four tables: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}.
 The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, textstat for readability formulas, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
 A pre-processing script first transforms it for the metric scripts and filters out files that are not genuine skills (\texttt{filename}, \texttt{location\_class}, \texttt{frontmatter\_valid}).
 The cleaned data then passes to a separate calculation script for each metric, whose methods are described in Section~\ref{sec:design}.
 Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
 The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\linewidth]{figures/490CapstoneProposalGeneralFigure1}
-\caption{Data flow from the GitSkills tables through the Python pipeline to the final metrics file.}
-\label{fig:system}
-\end{figure}
 
 \CourseSubsection{Interface and performance specifications}
 

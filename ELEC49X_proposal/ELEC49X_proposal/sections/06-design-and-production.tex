@@ -44,50 +44,121 @@ To validate, two team members will independently rate 100 skills, stratified by 
 
 \CourseSubsection{Milestones and Division of Labor}
 
-Progress will be reviewed intermittently during Friday team meetings. Each member will be required to lead at least one milestone, coordinating the work and overseeing its timely completion. Responsibility for implementation and delivery will be shared across the team.
+Development will follow an iterative approach: metric implementations will be tested on sample data and refined before integration and larger-scale analysis. Progress and outstanding issues will be reviewed during Friday team meetings. Each milestone lead will coordinate completion and supporting test evidence, with implementation and review shared across the team.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.55\linewidth-6\tabcolsep\relax} L{0.18\linewidth} L{0.18\linewidth}@{}}
-\caption{Proposed technical milestones and ownership.}\label{tab:proposal-milestones}\\
+\caption{Planned milestones and lead responsibilities}\label{tab:proposal-milestones}\\
 \rowcolor{MidGray}
-\TableHeader{ID} & \TableHeader{Milestone} & \TableHeader{Due date} & \TableHeader{Lead}\\
+\TableHeader{ID} & \TableHeader{Milestone} & \TableHeader{Target date} & \TableHeader{Lead}\\
 \midrule
 \endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Milestone} & \TableHeader{Target date} & \TableHeader{Lead}\\
+\midrule
 \endhead
 \bottomrule
 \endfoot
 
-M1 & Dataset prepared and sample records checked.
-& Oct.\ 23, 2026 & Naman\\
+M1 & Metric definitions reviewed
+& Nov.\ 6, 2026 & Noah\\
 \addlinespace[3pt]
 
-M2 & Initial metric calculations checked against reference examples.
+M2 & Dataset preparation completed
+& Nov.\ 13, 2026 & Naman\\
+\addlinespace[3pt]
+
+M3 & Initial metric calculations verified
 & Nov.\ 13, 2026 & James\\
 \addlinespace[3pt]
 
-M3 & Supported metrics calculated; initial tables and plots generated.
+M4 & Sample pipeline integrated
+& Nov.\ 20, 2026 & Faiz\\
+\addlinespace[3pt]
+
+M5 & Scalability assessed
+& Nov.\ 27, 2026 & Naman\\
+\addlinespace[3pt]
+
+M6 & Initial analysis produced
 & Dec.\ 4, 2026 & Faiz\\
 \addlinespace[3pt]
 
-M4 & Results reviewed; focused research questions documented.
+M7 & MSR submission-readiness review
+& Dec.\ 11, 2026 & James\\
+\addlinespace[3pt]
+
+M8 & MSR abstract submitted (conditional)
+& Dec.\ 18, 2026 & Faiz\\
+\addlinespace[3pt]
+
+M9 & MSR paper submitted (conditional)
+& Dec.\ 23, 2026 & Noah\\
+\addlinespace[3pt]
+
+M10 & Results reviewed and focused research questions documented
 & Jan.\ 29, 2027 & Noah\\
 \addlinespace[3pt]
 
-M5 & Follow-up investigations evaluated; feasible extensions tested.
+M11 & Follow-up investigations evaluated
 & Feb.\ 26, 2027 & Naman\\
 \addlinespace[3pt]
 
-M6 & Final pipeline validated and results reproduced.
+M12 & Final pipeline validated and results reproduced
 & Mar.\ 12, 2027 & James\\
 
 \end{longtable}
 \end{singlespace}
 
+M2 and M3 are in progress. Dataset preparation has supported preliminary assessments, but final preprocessing checks and initial calculation verification remain ongoing.
+
+M1 establishes the definitions used for M3. Completion of M2 and M3 supports integration in M4, followed by scalability assessment in M5 and initial analysis in M6. M10 reviews the results and selects follow-up investigations for M11 before final validation in M12.
+
+M7 will assess findings, validation evidence, limitations, and writing readiness to determine whether to proceed with conference submission. M8 proceeds if that review supports submission; M9 additionally depends on sufficiently validated findings and supporting analysis. The abstract and paper deadlines are December 18 and December 23, 2026, respectively~\cite{msr2027MiningChallenge}. M8 and M9 are conditional; the remaining capstone milestones apply regardless of the submission decision.
+
 \CourseSubsection{Further Exploration and Contingencies}
 
-Initial findings will guide M5, which may examine instruction structure, bundled scripts and references, or reuse patterns. Additional analyses will depend on relevance, data availability, and remaining time.
+Following the initial analysis in M6, the research review in M10 will select follow-up investigations for M11. Candidates include differences in skill revision activity across repository domains, instruction structure, and reuse patterns. Selection will depend on data availability, measurement validity, and remaining time.
 
-Missing data or unreliable metrics will prompt revised methods or a narrower scope. Processing limits will be managed through batching or documented sampling to control time and costs. If delays threaten validation, tasks will be reassigned and optional investigations deferred. Resulting limitations will be documented.
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\hyphenpenalty=10000 \exhyphenpenalty=10000
+\begin{longtable}{@{}L{0.05\linewidth} L{\dimexpr0.27\linewidth-2\tabcolsep\relax} L{\dimexpr0.52\linewidth-2\tabcolsep\relax} L{\dimexpr0.16\linewidth-2\tabcolsep\relax}@{}}
+\caption{Contingencies and affected milestones}\label{tab:contingencies}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Risk and trigger} & \TableHeader{Response and effect on the plan} & \TableHeader{Affected milestones}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Risk and trigger} & \TableHeader{Response and effect on the plan} & \TableHeader{Affected milestones}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+R1 & \textbf{Incomplete data or repository history:} fields or revisions required for a calculation cannot be obtained.
+& Document missingness and restrict the affected analysis to eligible records. If insufficient evidence remains, report the measurement as unavailable and assess the effect on requirements and conclusions.
+& M2, M3, M6\\
+\addlinespace[3pt]
+
+R2 & \textbf{Unsupported metric interpretation:} a metric fails its specified validation criteria.
+& Review preprocessing, assumptions, and the measurement method, then repeat validation. If it remains unsupported, report its limitations and exclude interpretations that the evidence does not justify.
+& M3, M6, M10, M12\\
+\addlinespace[3pt]
+
+R3 & \textbf{Processing limits:} measured runtime or memory exceeds the specified acceptance limit (PF-01, PF-02).
+& Adjust batch sizes or data access and repeat performance tests. If full-dataset processing remains infeasible, propose documented sampling and explicitly review its effect on coverage and performance requirements.
+& M5, M6, M12\\
+\addlinespace[3pt]
+
+R4 & \textbf{Schedule pressure:} unresolved defects or analysis delays threaten required validation or delivery.
+& Reassign work and defer optional investigations to protect core analysis and validation. Forgo MSR submission if necessary and continue toward capstone deadlines.
+& M6, M7, M8, M9, M11, M12\\
+
+\end{longtable}
+\end{singlespace}
+
+Changes affecting mandatory requirements will be reviewed with the supervisor and reflected in the requirements, tests, and schedule. Optional investigations may be deferred, but unsuccessful tests or unsupported findings will not be presented as completed validation.
 
 \clearpage
