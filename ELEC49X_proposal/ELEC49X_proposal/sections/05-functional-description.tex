@@ -3,11 +3,48 @@
 
 The pipeline introduced in Figure~\ref{fig:system} comprises data preparation, metric calculation, and output transformation.
 GitSkills is distributed as a single SQLite database, with a Parquet copy of each table, and holds four tables: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}.
-The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, textstat for readability formulas, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
-A pre-processing script first transforms it for the metric scripts and filters out files that are not genuine skills (\texttt{filename}, \texttt{location\_class}, \texttt{frontmatter\_valid}).
+The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, Anthropic's tokenizer (loaded through the Hugging Face tokenizers library) for token counts, textstat for readability formulas, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
+A single pre-processing script, shared by every metric, first transforms it for the metric scripts and filters out files that are not genuine skills, keeping one row per distinct skill (\textit{dedup\_primary} = 1, a \textit{filename} of SKILL.md, valid front matter, not a symlink, and a non-empty body).
+It also splits each skill's \textit{content} into front matter and body, and the body into prose and code.
 The cleaned data then passes to a separate calculation script for each metric, whose methods are described in Section~\ref{sec:design}.
 Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
 The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
+
+\medskip
+
+\needspace{5\baselineskip}
+\noindent\textbf{Size and Churn Calculation Modules.}
+
+Figure~\ref{fig:size-churn} shows the Size and Churn modules in one diagram to save space, since both start from the same pre-processing step.
+The tables on the left list every field the two modules read, all keyed by \textit{file\_sha} except bundle files, which join to their skill on \textit{repo\_full\_name} and \textit{path}.
+Clone Coverage is faded because Churn reuses its near-clone families instead of building its own.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/size-churn-function}
+\caption{Size and Churn modules, showing the fields read from GitSkills, the shared pre-processing, and the outputs of each calculation.}
+\label{fig:size-churn}
+\end{figure}
+
+\needspace{5\baselineskip}
+\noindent\textbf{Size Calculation Module.}
+
+The Size module counts the tokens in each of a skill's three tiers: the description, the body (prose and code), and the bundle, which only counts the text files whose content GitSkills stored.
+Skills with \textit{composition\_truncated} = 1 are flagged, since their bundle listing is incomplete.
+Lines and words are also counted for the body, along with lines and tokens for each bundled script, so skills can be compared directly with ordinary code.
+The output is one row of size columns per \textit{file\_sha}, plus a separate file for the bundled scripts.
+
+\medskip
+
+\needspace{5\baselineskip}
+\noindent\textbf{Churn Calculation Module.}
+
+The Churn module splits into three calculations.
+\textit{Activity churn} uses the commit fields of every skill with history (\textit{history\_fetched} = 1) to find how many times it was edited (\textit{commit\_count} minus 1), its edits per month, how long it was actively edited, and how long it has sat untouched up to the snapshot date (\textit{finished\_at} in \textit{mining\_runs}).
+It also flags first or last commits that were AI co-authored or made by a bot, and whether the author changed between them.
+\textit{Token churn} follows a sample of edited skills, stratified by \textit{location\_class}, through their cloned histories, renames included, and counts the tokens added and removed between each pair of consecutive versions.
+\textit{Cross-copy churn} orders each near-clone family by \textit{first\_commit\_at}, or by the repository's \textit{created\_at} when a skill has no history, then compares each skill with its most similar earlier member and counts the tokens added and removed.
+Activity and token churn go into the churn columns, while each link from a parent to its child goes into a separate lineage file, along with its similarity, its token counts, and which date was used to decide its direction.
 
 \medskip
 
@@ -43,7 +80,7 @@ Pairs with different file hashes and Jaccard similarity of at least 80\% will be
 \endfoot
 IF-01 & All four GitSkills tables load into Python with their documented columns & 4 of 4 tables & 0 missing columns \\
 \addlinespace[3pt]
-IF-02 & Scripts pass data keyed by \texttt{file\_sha}, with no rows lost between stages & 100\% of rows kept & 0 rows \\
+IF-02 & Scripts pass data keyed by \texttt{file\_sha} (bundle files by \textit{repo\_full\_name} and \textit{path}), with no rows lost between stages & 100\% of rows kept & 0 rows \\
 \addlinespace[3pt]
 IF-03 & Output file holds one row per distinct skill, in Parquet and CSV & 1 row per skill & 0 duplicates \\
 \addlinespace[3pt]
@@ -58,7 +95,35 @@ PF-04 & Precision of cross-copy lineage links on the hand-labelled sample & $\ge
 PF-05 & Spearman correlation between Flesch--Kincaid grade and the mean human rating on the 100-skill readability sample & $|\rho| \geq$ 0.5 & $-$0.1 \\
 \addlinespace[3pt]
 PF-06 & Agreement between the two readability raters (Krippendorff's $\alpha$~\cite{krippendorff2004}) & $\geq$ 0.80 & $-$0.13 \\
+\addlinespace[3pt]
+FR-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable & 100\% of truncated skills flagged & 0 unflagged \\
+\addlinespace[3pt]
+FR-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body & 2 counts per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count & 2 counts per script & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-05 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy & 4 values per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-06 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot & 1 flag per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-07 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions & Every cloned sampled skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+FR-08 & For every near-clone family, the Churn module shall link each member except the earliest to exactly one earlier parent & $n-1$ links per family of $n$ & 0 links \\
+\addlinespace[3pt]
+IF-04 & Clone Coverage passes a \textit{family\_id} for every included skill in a near-clone family, keyed by \textit{file\_sha} & 1 ID per member & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+IF-05 & Lineage file holds one row per link with \textit{parent\_sha}, \textit{child\_sha}, \textit{similarity}, \textit{tokens\_added}, \textit{tokens\_removed}, and \textit{direction\_basis} & 6 fields per link & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+PF-07 & Token, line, and word counts on the 20 skills chosen for T01 match a standalone reference script & Exact match & 0 differences \\
+\addlinespace[3pt]
+PF-08 & Tokens added and removed on the version and copy pairs chosen for T02 match git's word diff of the same pairs & Within 2 tokens per pair & 0 pairs outside \\
+\addlinespace[3pt]
+PF-09 & Share of links with both \textit{first\_commit\_at} values where ordering by repository \textit{created\_at} gives the same parent & $\geq$ 0.85 & $-$0.05 \\
 \end{longtable}
+\vspace{-6pt}
+\noindent{\small $^{*}$Depending on how clean the data is, a few outlier records may lack the usual fields. These are flagged and reported rather than counted as missing.}
 \end{singlespace}
 
 \CourseSubsection{Risks and safety hazards}

@@ -20,11 +20,11 @@ Verification will check metric calculations against independently established re
 \endfoot
 
 T01 & Size
-& Compare calculated counts with independently established counts for controlled skill examples.\\
+& \textit{Inputs:} 20 skills chosen from the 13,000-skill sample to cover prose-only bodies, bodies with code blocks, bundles with both text and binary files, and at least one skill with \textit{composition\_truncated} = 1. Expected counts come from a short standalone script that tokenizes each tier's text on its own and counts lines and words, and the split between description, body, and bundle is checked by eye. \textit{Procedure:} run pre-processing and the Size module on the 20 skills. \textit{Acceptance:} every count matches the reference script, binary files are left out of the bundle, and every truncated skill is flagged. \textit{Requirements:} FR-01 to FR-04, IF-02, PF-07.\\
 \addlinespace[3pt]
 
 T02 & Churn
-& Compare measured changes with known changes between controlled versions or copies, distinguishing the implemented churn measures.\\
+& \textit{Inputs:} 20 skills chosen from the sample, made up of 10 skills with commit history, 5 edited skills whose repositories are cloned (at least one of them renamed), and one near-clone family of about 5 members. Expected values are worked out by hand from the commit fields and dates, the AI and bot flags are read from the commit messages, the tokens added and removed come from git's word diff of each version and copy pair, and the order of the copies is read from the dates. \textit{Procedure:} run the Churn module on these skills, then have the team label 100 links from the full sample as adapted copy, template only, or unrelated. \textit{Acceptance:} activity values and flags match exactly, token counts are within 2 tokens of git's diff, the history is followed through the rename, each copy in the family is linked to an earlier member, with the direction matching the dates where they differ, and the labelled links meet PF-04. \textit{Requirements:} FR-05 to FR-08, IF-04, IF-05, PF-04, PF-08.\\
 \addlinespace[3pt]
 
 T03 & Age
