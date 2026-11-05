@@ -18,7 +18,7 @@ Large samples make almost any difference statistically significant, so a finding
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.12\linewidth} L{\dimexpr0.20\linewidth-2\tabcolsep\relax} L{\dimexpr0.68\linewidth-2\tabcolsep\relax}@{}}
-\caption{Planned metric verification and validation}\label{tab:testing-plan}\\
+\caption{Planned metric verification and validation.}\label{tab:testing-plan}\\
 \rowcolor{MidGray}
 \TableHeader{Test ID} & \TableHeader{Metric} & \TableHeader{Planned verification}\\
 \midrule
@@ -43,7 +43,7 @@ T03 & Age
 \addlinespace[3pt]
 
 T04 & Clone coverage
-& Test CL-01 and CL-02 using sample skills with exact and near-clones. The test passes if matching hashes are grouped correctly, skills with at least 80\% Jaccard similarity are identified as near-clones (80\% similarity threshold subject to change), and the calculated clone coverage matches the expected results.\\
+& Test CL-01 and CL-02 using sample skills with exact and near-clones. The test passes if matching hashes are grouped correctly, skills at or above the selected Jaccard threshold (80\% initially) are identified as near-clones, and the calculated clone coverage matches the expected results.\\
 \addlinespace[3pt]
 
 T05 & Readability
@@ -81,7 +81,7 @@ T05.6 & RD-4, RD-5, RD-6, RD-7; M3, M4 & Fault injection with non-English text, 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.20\linewidth} L{\dimexpr0.38\linewidth-2\tabcolsep\relax} L{\dimexpr0.42\linewidth-2\tabcolsep\relax}@{}}
-\caption{Planned pipeline verification}\label{tab:pipeline-verification}\\
+\caption{Planned pipeline verification.}\label{tab:pipeline-verification}\\
 \rowcolor{MidGray}
 \TableHeader{Test ID} & \TableHeader{Procedure} & \TableHeader{Proposed acceptance criterion}\\
 \midrule
@@ -104,7 +104,7 @@ T07\newline Reproducibility
 \addlinespace[3pt]
 
 T08\newline Performance
-& Measure elapsed runtime and peak memory for the workload and workstation specified in the performance requirements.
+& Measure elapsed runtime and peak memory for the full-dataset workload on the workstation recorded with the run.
 & Runtime and peak memory satisfy the stated acceptance limits for that workload and environment.\\
 \addlinespace[3pt]
 

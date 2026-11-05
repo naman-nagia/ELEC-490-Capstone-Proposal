@@ -1,7 +1,7 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element. F1 ingests the GitSkills tables, which are distributed as one SQLite database with a Parquet copy of each table: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}. F2, one pre-processing step shared by every metric, keeps one row per distinct skill (\textit{dedup\_primary} = 1, a \textit{filename} of SKILL.md, valid front matter, not a symlink, and a non-empty body) and splits its \textit{content} into front matter, prose, and code. F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
+The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element. F1 ingests the GitSkills tables, which are distributed as one SQLite database with a Parquet copy of each table: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}. F2, one pre-processing step shared by every metric, keeps one row per distinct skill (\textit{dedup\_primary} = 1, a \textit{filename} of SKILL.md, valid front matter, not a symlink, and a non-empty body) and splits its \textit{content} into front matter, prose, and code. F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. We build these functions as three prototypes, P1 to P3 (Table~\ref{tab:prototypes}). Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
 We query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}, because live GitHub mining changes between runs and loading the 44~GB database into memory exceeds the limit in PF-02. Each stage writes Parquet, so a failed stage restarts without repeating earlier ones. The only input from outside the dataset is a small sample of cloned GitHub repositories used for token churn.
 
 \medskip
@@ -51,7 +51,7 @@ Activity and token churn go into the churn columns, while each link from a paren
 \label{fig:age-function}
 \end{figure}
 
-The age module calculates how long the SKILL.md file has been inside the repository. It uses the \texttt{first\_commit\_at} timestamp and a fixed dataset collection date to calculate the age of the skill. The purpose of the fixed dataset collection date is to assure consistency across the dataset. The module will output the calculated age value (displayed in days). This value will be passed to the output stage for analysis and potential visualization. Records with missing or invalid values in the \texttt{first\_commit\_at} field will not be imputed but will be flagged instead. The use of the first commit date has been selected to determine age over the latest commit date as the team looks to measure how long the skill has existed rather than how long since the skills final edit.
+The age module calculates how long the SKILL.md file has been inside the repository. It uses the \texttt{first\_commit\_at} timestamp and a fixed dataset collection date to calculate the age of the skill. The purpose of the fixed dataset collection date is to assure consistency across the dataset. The module will output the calculated age value (displayed in days). This value will be passed to the output stage for analysis and potential visualization. Records with missing or invalid values in the \texttt{first\_commit\_at} field will not be imputed but will be flagged instead. The use of the first commit date has been selected to determine age over the latest commit date because we measure how long the skill has existed rather than how long since its final edit.
 
 \medskip
 
@@ -75,9 +75,9 @@ Pairs with different file hashes and Jaccard similarity exceeding a selected thr
 \noindent\textbf{Readability Calculation Module.}
 
 Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a logical element~\cite[Sec.~4.3]{nasa2016handbook}. Pre-processing (F2) supplies the description, prose, and code of each distinct skill, which we score separately so that one part cannot hide another.
-Readability formulas count words per sentence, so F2.2 parses the Markdown rather than scoring raw text. It joins hard-wrapped lines, which occur in 37\% of skills in our pilot on the 13,000-skill sample; removes inline code, which formulas misread as short words~\cite{chatlatanagulchai2026agent}; and emits each heading, list item, and table row as one sentence. Scoring raw text would instead raise the median grade from 9.1 to 12.2.
-English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables, which independently checks syllable counting in technical text; the two agreed closely in the pilot ($\rho = 0.90$). We rejected Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog}, which also rely on syllables and track Flesch--Kincaid closely, and Dale--Chall~\cite{chall1995}, which counts technical terms as unfamiliar. The closest prior work scored agent context files with Flesch Reading Ease and found only a weak link to human judgement ($\rho = 0.19$)~\cite{chatlatanagulchai2026agent}, so we report grades as reading-level estimates, not as measures of quality.
-Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows, within the 4-to-11-line snippets behind Posnett's model~\cite{posnett2011simpler}, and scored with its linear output, because its sigmoid output falls below 0.01 for 91\% of pilot skills. Its authors caution against applying it blindly, and it tracked developers weakly on AI-generated Java (MCC $= -0.036$)~\cite{sergeyuk2024reassessing}, so this score is also an estimate. Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 reports medians, interquartile ranges, and the effect size Cliff's $\delta$~\cite{cliff1993dominance}, with distribution plots.
+Readability formulas count words per sentence, so F3.5.1 parses the Markdown rather than scoring raw text. It joins hard-wrapped lines, which occur in 37\% of skills in our pilot on the 13,000-skill sample; removes inline code, which formulas misread as short words~\cite{chatlatanagulchai2026agent}; and emits each heading, list item, and table row as one sentence. Scoring raw text would instead raise the median grade from 9.1 to 12.2.
+English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables, which independently checks syllable counting in technical text; the two agreed closely in the pilot (Spearman's $\rho = 0.90$). We rejected Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog}, which also rely on syllables and track Flesch--Kincaid closely, and Dale--Chall~\cite{chall1995}, which counts technical terms as unfamiliar. The closest prior work scored agent context files with Flesch Reading Ease and found only a weak link to human judgement ($\rho = 0.19$)~\cite{chatlatanagulchai2026agent}, so we report grades as reading-level estimates, not as measures of quality.
+Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows, within the 4-to-11-line snippets behind Posnett's model~\cite{posnett2011simpler}, and scored with its linear output, because its sigmoid output falls below 0.01 for 91\% of pilot skills. Its authors caution against applying it blindly, and it tracked developers weakly on AI-generated Java (Matthews correlation coefficient, MCC, $= -0.036$)~\cite{sergeyuk2024reassessing}, so this score is also an estimate. Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 reports medians, interquartile ranges, and the effect size Cliff's $\delta$~\cite{cliff1993dominance}, with distribution plots.
 
 \begin{figure}[htbp]
 \centering
@@ -178,11 +178,11 @@ RD-1 & The module shall score each part of an eligible English skill with its as
 \addlinespace[3pt]
 RD-2 & When prose contains a heading, list item, or table row, the normalizer shall output it as its own sentence. & Functional; critical & SYS-1 & T05.1\\
 \addlinespace[3pt]
-RD-10 & The module shall export the 40 extreme-graded English skills (20 highest, 20 lowest) for hand review. & Validation; major & RD-6 & T05.5\\
-\addlinespace[3pt]
 RD-4 & The module shall not assign a prose grade to a skill labelled non-English. & Fault; critical & SYS-2 & T05.6\\
 \addlinespace[3pt]
 RD-6 & The module shall not label a grade as a quality score. & Fault; critical & SYS-2 & T05.6\\
+\addlinespace[3pt]
+RD-10 & The module shall export the 40 extreme-graded English skills (20 highest, 20 lowest) for hand review. & Validation; major & RD-6 & T05.5\\
 \addlinespace[3pt]
 RD-S1 & The module may count vague terms per 100 words~\cite{femmer2017smells}. & Functional; stretch & SN-4 & ---\\
 \end{longtable}
@@ -210,29 +210,29 @@ CL-01 & The Clone Coverage module shall identify exact clone groups from matchin
 \addlinespace[3pt]
 CL-02 & The Clone Coverage module shall form connected clone groups and report exact and expanded coverage separately, with excluded-record counts. & Both percentages and exclusion counts produced & 0 errors on reference examples \\
 \addlinespace[3pt]
-SZ-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
+SZ-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle. & 3 counts per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-SZ-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable & 100\% of truncated skills flagged & 0 unflagged \\
+SZ-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable. & 100\% of truncated skills flagged & 0 unflagged \\
 \addlinespace[3pt]
-SZ-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body & 2 counts per skill & 0 missing$^{*}$ \\
+SZ-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body. & 2 counts per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-SZ-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count & 2 counts per script & 0 missing$^{*}$ \\
+SZ-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count. & 2 counts per script & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-CH-01 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy & 4 values per skill & 0 missing$^{*}$ \\
+CH-01 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy. & 4 values per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-CH-02 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot & 1 flag per skill & 0 missing$^{*}$ \\
+CH-02 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot. & 1 flag per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-CH-03 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions & Every cloned sampled skill & 0 missing$^{*}$ \\
+CH-03 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions. & Every cloned sampled skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-CH-04 & For every near-clone family, the Churn module shall link each member after the earliest to its most similar earlier member, leaving the link undirected when the dates cannot tell which came first & 1 link per member after the earliest & 0 missing$^{*}$ \\
+CH-04 & For every near-clone family, the Churn module shall link each member after the earliest to its most similar earlier member, leaving the link undirected when the dates cannot tell which came first. & 1 link per member after the earliest & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-IF-04 & Clone Coverage passes a \textit{family\_id} for every included skill in a near-clone family, keyed by \textit{file\_sha} & 1 ID per member & 0 missing$^{*}$ \\
+IF-04 & The Clone Coverage module shall pass a \textit{family\_id} for every included skill in a near-clone family, keyed by \textit{file\_sha}. & 1 ID per member & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-IF-05 & Lineage file holds one row per link with \textit{parent\_sha}, \textit{child\_sha}, \textit{similarity}, \textit{tokens\_added}, \textit{tokens\_removed}, and \textit{direction\_basis} & 6 fields per link & 0 missing$^{*}$ \\
+IF-05 & The lineage file shall hold one row per link with \textit{parent\_sha}, \textit{child\_sha}, \textit{similarity}, \textit{tokens\_added}, \textit{tokens\_removed}, and \textit{direction\_basis}. & 6 fields per link & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-PF-07 & Token, line, and word counts on the 20 skills chosen for T01 match a standalone reference script & Exact match & 0 differences \\
+PF-07 & Token, line, and word counts on the 20 skills chosen for T01 shall match a standalone reference script. & Exact match & 0 differences \\
 \addlinespace[3pt]
-PF-08 & Tokens added and removed on the version and copy pairs chosen for T02 match git's word diff of the same pairs & Within 2 tokens per pair & 0 pairs outside \\
+PF-08 & Tokens added and removed on the version and copy pairs chosen for T02 shall match git's word diff of the same pairs. & Within 2 tokens per pair & 0 pairs outside \\
 \end{longtable}
 \vspace{-6pt}
 \noindent{\small $^{*}$Depending on how clean the data is, a few outlier records may lack the usual fields. These are flagged and reported rather than counted as missing.}

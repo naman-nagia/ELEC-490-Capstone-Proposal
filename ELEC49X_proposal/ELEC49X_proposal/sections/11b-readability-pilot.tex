@@ -55,7 +55,7 @@ I2 & F1 to F2 & Record batches of the \texttt{artifacts}, \texttt{artifact\_sibl
 I3 & F2 to F3 & One Parquet row per distinct skill, keyed by \texttt{file\_sha}, with its front matter, prose, code, and status; bundle files keyed by repository and path & IF-02, SYS-2\\
 I4 & F3 to F4 & One Parquet table per metric, keyed by \texttt{file\_sha} & IF-02\\
 I5 & F4 to F5 & Metrics file with one row per distinct skill, in Parquet and CSV & IF-03\\
-I6 & E2 to F3.2 & Git history of the cloned churn-validation repositories & SYS-1\\
+I6 & E2 to F3.2 & Git history of the cloned repositories used for token churn & SYS-1\\
 I7 & F5 to reader & Statistics tables and vector figures & SYS-3\\
 \end{longtable}
 \end{singlespace}

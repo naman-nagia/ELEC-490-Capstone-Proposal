@@ -67,7 +67,7 @@ def pipeline():
     for a, b in zip(fs, ls):
         c.arrow(B(a), T(b), color=NAVY, ls=(0, (2, 2)))
     c.ax.text(6.5, 7.5, "Top row: functions.\nBottom row: logical\nelements. Dashed:\nallocated to.", fontsize=5.8, style="italic", color=NAVY, ha="center", va="center")
-    c.box(57, 30.6, "Cloned repositories (E2, churn check)", w=27, h=3.4, edge=MUTED, fill=DATA, fs=5.8)
+    c.box(57, 30.6, "Cloned repositories (E2, token churn)", w=27, h=3.4, edge=MUTED, fill=DATA, fs=5.8)
     c.arrow((57, 28.7), T(fs[2]), "I6", lx=2, ly=0)
     c.ax.text(91, 29.6, "I7: tables, figures", fontsize=5.8, style="italic", color=MUTED, ha="center")
     c.arrow(T(fs[4]), (91, 28.8))
@@ -227,7 +227,7 @@ def test_setup():
         (26.5, "Controlled fixtures\n(known expected results)"),
         (16.5, "13,000-skill sample\n(fixed GitSkills release)"),
         (6.5, "Full snapshot\n(July 2026)")]]
-    pipe = c.box(40, 16.5, "Pipeline under test\nP1, P2, P3\nPinned Python environment,\nfixed configuration file,\nreference workstation", w=23, h=20)
+    pipe = c.box(40, 16.5, "Pipeline under test\nP1, P2, P3\nPinned Python environment,\nfixed configuration file,\none team workstation", w=23, h=20)
     outs = c.box(63, 16.5, "Outputs\nmetric tables,\nlogs, plotted values", w=14, h=20, edge=MUTED, fill=DATA, fs=6.3)
     checks = [c.box(87, y, t, w=25, h=5.4, fs=6.0) for y, t in [
         (29, "Reference values: T01-T04, T05.1-T05.4"),
