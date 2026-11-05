@@ -208,9 +208,7 @@ AGE-02 & The Age module shall flag missing, invalid, or future-dated timestamps 
 \addlinespace[3pt]
 CL-01 & The Clone Coverage module shall identify exact clone groups from matching \texttt{file\_sha} values and count all occurrences in each group. & Correct exact groups and coverage & 0 errors on reference examples \\
 \addlinespace[3pt]
-CL-02 & The Clone Coverage module shall find near-clone candidate pairs using MinHash and LSH, and link pairs whose three-token shingle Jaccard similarity is at least 0.80. & Threshold $\geq$ 0.80 for linked pairs & 0 incorrect threshold decisions on evaluated pairs \\
-\addlinespace[3pt]
-CL-03 & The Clone Coverage module shall form connected clone groups and report exact and expanded coverage separately, with excluded-record counts. & Both percentages and exclusion counts produced & 0 errors on reference examples \\
+CL-02 & The Clone Coverage module shall form connected clone groups and report exact and expanded coverage separately, with excluded-record counts. & Both percentages and exclusion counts produced & 0 errors on reference examples \\
 \addlinespace[3pt]
 SZ-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
