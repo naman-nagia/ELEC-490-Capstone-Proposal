@@ -96,21 +96,31 @@ PF-05 & Spearman correlation between Flesch--Kincaid grade and the mean human ra
 \addlinespace[3pt]
 PF-06 & Agreement between the two readability raters (Krippendorff's $\alpha$~\cite{krippendorff2004}) & $\geq$ 0.80 & $-$0.13 \\
 \addlinespace[3pt]
-FR-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
+AGE-01 & The Age module shall calculate repository-level age in days from \texttt{first\_commit\_at} to a fixed collection date. & Correct age for every valid record & 0 calculation errors \\
 \addlinespace[3pt]
-FR-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable & 100\% of truncated skills flagged & 0 unflagged \\
+AGE-02 & The Age module shall flag missing, invalid, or future-dated timestamps without assigning a numerical age. & 100\% of invalid records flagged & 0 incorrect ages \\
 \addlinespace[3pt]
-FR-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body & 2 counts per skill & 0 missing$^{*}$ \\
+CL-01 & The Clone Coverage module shall identify exact clone groups from matching \texttt{file\_sha} values and count all occurrences in each group. & Correct exact groups and coverage & 0 errors on reference examples \\
 \addlinespace[3pt]
-FR-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count & 2 counts per script & 0 missing$^{*}$ \\
+CL-02 & The Clone Coverage module shall find near-clone candidate pairs using MinHash and LSH, and link pairs whose three-token shingle Jaccard similarity is at least 0.80. & Threshold $\geq$ 0.80 for linked pairs & 0 incorrect threshold decisions on evaluated pairs \\
 \addlinespace[3pt]
-FR-05 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy & 4 values per skill & 0 missing$^{*}$ \\
+CL-03 & The Clone Coverage module shall form connected clone groups and report exact and expanded coverage separately, with excluded-record counts. & Both percentages and exclusion counts produced & 0 errors on reference examples \\
 \addlinespace[3pt]
-FR-06 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot & 1 flag per skill & 0 missing$^{*}$ \\
+SZ-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
 \addlinespace[3pt]
-FR-07 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions & Every cloned sampled skill & 0 missing$^{*}$ \\
+SZ-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable & 100\% of truncated skills flagged & 0 unflagged \\
 \addlinespace[3pt]
-FR-08 & For every near-clone family, the Churn module shall link each member except the earliest to exactly one earlier parent & $n-1$ links per family of $n$ & 0 links \\
+SZ-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body & 2 counts per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+SZ-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count & 2 counts per script & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-01 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy & 4 values per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-02 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot & 1 flag per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-03 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions & Every cloned sampled skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-04 & For every near-clone family, the Churn module shall link each member after the earliest to its most similar earlier member, leaving the link undirected when the dates cannot tell which came first & 1 link per member after the earliest & 0 missing$^{*}$ \\
 \addlinespace[3pt]
 IF-04 & Clone Coverage passes a \textit{family\_id} for every included skill in a near-clone family, keyed by \textit{file\_sha} & 1 ID per member & 0 missing$^{*}$ \\
 \addlinespace[3pt]
@@ -119,8 +129,6 @@ IF-05 & Lineage file holds one row per link with \textit{parent\_sha}, \textit{c
 PF-07 & Token, line, and word counts on the 20 skills chosen for T01 match a standalone reference script & Exact match & 0 differences \\
 \addlinespace[3pt]
 PF-08 & Tokens added and removed on the version and copy pairs chosen for T02 match git's word diff of the same pairs & Within 2 tokens per pair & 0 pairs outside \\
-\addlinespace[3pt]
-PF-09 & Share of links with both \textit{first\_commit\_at} values where ordering by repository \textit{created\_at} gives the same parent & $\geq$ 0.85 & $-$0.05 \\
 \end{longtable}
 \vspace{-6pt}
 \noindent{\small $^{*}$Depending on how clean the data is, a few outlier records may lack the usual fields. These are flagged and reported rather than counted as missing.}

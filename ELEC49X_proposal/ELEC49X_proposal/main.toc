@@ -11,9 +11,9 @@
 \contentsline {section}{\numberline {3}Design and Production Approach}{9}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Metric Development and Analysis}{9}{subsection.3.1}%
 \contentsline {subsection}{\numberline {3.2}Milestones and Division of Labor}{11}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Further Exploration and Contingencies}{12}{subsection.3.3}%
-\contentsline {section}{\numberline {4}Testing and Evaluation}{13}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Metric Verification and Validation}{13}{subsection.4.1}%
+\contentsline {subsection}{\numberline {3.3}Further Exploration and Contingencies}{13}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Testing and Evaluation}{14}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Metric Verification and Validation}{14}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Pipeline Verification}{14}{subsection.4.2}%
 \contentsline {subsection}{\numberline {4.3}Evaluation and Acceptance}{15}{subsection.4.3}%
 \contentsline {section}{\numberline {5}Resource Requirements}{16}{section.5}%

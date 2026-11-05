@@ -23,15 +23,17 @@ What skills tend to do instead is get copied and then modified for a new project
 \textit{Token churn} is classical churn counted in tokens instead of lines, computed from the full git history of a sample of edited skills, and confirms that the other two measures reflect real change.\par
 
 \noindent\textbf{Age.}
-Age is usually measured as the amount of time since the file was introduced to the repository. This method of measurement will work well for skills. The GitSkills artifact subset has fields: first\_commit\_at and last\_commit\_at. The team will calculate the difference between first\_commit\_at and the dataset collection date, then convert this difference to days to create the Age metric.\par
+Age measures how long a skill has existed within its repository. The GitSkills \texttt{artifacts} table provides the \texttt{first\_commit\_at} and \texttt{last\_commit\_at} timestamps, of which \texttt{first\_commit\_at} will be used to calculate age. For each eligible skill, the team will subtract its first recorded commit date from a fixed dataset collection date and express the elapsed time in days. Using the same collection date for every skill ensures that the results are reproducible across repeated runs.
+
+The first commit is preferred over the last commit because the project measures how long a skill has existed, not how long it was actively maintained. For example, a skill that has never been edited after its introduction would still have a meaningful age. Since skills may be copied between repositories, the first recorded commit represents the skill's observed introduction to its current repository rather than necessarily the original creation date of its instructions. Records with missing, invalid, or future-dated timestamps will be flagged rather than assigned an estimated age. The calculation will first be checked against manually calculated examples on the 13,000-skill sample, then applied to eligible records in the full dataset.\par
+
 \noindent\textbf{Clone Coverage.}
-Clone coverage measures how much content in a dataset is duplicated. In the GitSkills artifacts subset, there is a field called content\_hash. Clones can be identified by checking to see if they have the same content\_hash. To calculate the clone coverage percentage, the team will group skills by content\_hash and count the number of cloned skill occurrences. The number of cloned skill occurrences will then be divided by the total number of skill occurrences then multiplied by 100 to get the clone coverage percentage.
-\[
-\text{Clone Coverage} =
-\frac{\text{Number of cloned skill occurrences}}
-{\text{Total number of skill occurrences}}
-\times 100.
-\]
+Clone coverage measures the proportion of skill occurrences belonging to groups with identical or substantially similar content. Exact clones will be identified in the GitSkills \texttt{artifacts} table by grouping occurrences with matching \texttt{file\_sha} values. Any hash group containing more than one occurrence will be classified as an exact clone group. Exact clone coverage will be calculated as the number of occurrences in these groups divided by the total number of eligible occurrences, multiplied by 100. Every occurrence in a duplicated group is counted, including the first one. The \texttt{repo\_full\_name} and \texttt{path} fields identify where occurrences appear, but will not be used to determine text similarity.
+
+Near-clones will also be detected using the actual skill text in \texttt{content}. The \texttt{dedup\_primary} field will help select one representative per exact-content group to avoid repeated comparisons, while \texttt{content\_fetched} and \texttt{content\_sha\_ok} will be checked for text availability and integrity. Each representative's text will be split into overlapping three-token sequences (shingles). MinHash signatures and locality-sensitive hashing (LSH) will retrieve candidate pairs with potentially similar content; their actual Jaccard similarity will then be computed as the number of shared shingles divided by the number of distinct shingles across both skills. Pairs with different file hashes and Jaccard similarity of at least 80\% will be linked as near-clones. The 80\% threshold requires substantial shared wording while allowing small edits, and its suitability for skills will be assessed through manually reviewed pairs. This is a text-reuse criterion, not proof that one repository copied from another.
+
+Exact clone groups and qualifying near-clone links will be combined into connected groups. This permits chains of related skills even when not every pair in the group individually exceeds 80\% similarity, so the grouping rule will be reported explicitly. Near-clone relationships will be mapped from representative contents back to all eligible skill occurrences using \texttt{file\_sha}. The team will report exact clone coverage and expanded coverage including near-clones separately, with the latter calculated over occurrences for which usable similarity data is available. Missing hashes, unavailable content, and exclusions will be reported so that the coverage percentages can be interpreted correctly. The methods will be prototyped on the 13,000-skill sample before scaling to the full dataset.\par
+
 \noindent\textbf{Readability.}
 Readability is classically measured in two separate ways. Formulas such as the Flesch--Kincaid grade level score English prose by sentence and word length~\cite{flesch1948,kincaid1975}, while code readability models score code from features such as line count and token entropy~\cite{buse2010readability,posnett2011simpler}.
 Neither fits a skill on its own, so we split each skill into the same three parts used for size and score each part with the instrument designed for it.
@@ -161,4 +163,4 @@ R4 & \textbf{Schedule pressure:} unresolved defects or analysis delays threaten 
 
 Changes affecting mandatory requirements will be reviewed with the supervisor and reflected in the requirements, tests, and schedule. Optional investigations may be deferred, but unsuccessful tests or unsupported findings will not be presented as completed validation.
 
-\clearpage
+\clearpage

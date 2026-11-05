@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  4 NOV 2026 22:31
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.10.7)  4 NOV 2026 22:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1605,26 +1605,21 @@ Underfull \hbox (badness 1490) in paragraph at lines 83--83
 \T1/cmtt/m/n/12 file_sha \T1/phv/m/n/12 (bun-dle files by 
  []
 
-
-Underfull \hbox (badness 2285) in paragraph at lines 123--123
-[]|\T1/phv/m/n/12 Share of links with both 
- []
-
 [6] [7] [8]) (sections/06-design-and-production.tex [9
 
 ]
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 8.0pt on input line 30.
-LaTeX Font Info:    Font shape `T1/phv/m/n' will be
-(Font)              scaled to size 6.0pt on input line 30.
- [10] [11]
-Underfull \hbox (badness 1389) in paragraph at lines 156--157
+Overfull \hbox (0.523pt too wide) in paragraph at lines 33--34
+[]\T1/phv/m/n/12 Near-clones will also be de-tected us-ing the ac-tual skill text in \T1/cmtt/m/n/12 content\T1/phv/m/n/12 . The \T1/cmtt/m/n/12 dedup_primary
+ []
+
+[10] [11] [12]
+Underfull \hbox (badness 1389) in paragraph at lines 158--159
 []|\T1/phv/m/n/12 Reassign work and de-fer op-tional 
  []
 
-[12]) (sections/07-testing-and-evaluation.tex [13
+[13]) (sections/07-testing-and-evaluation.tex [14
 
-] [14] [15]) (sections/08-resource-requirements.tex) (sections/09-conclusion.tex [16
+] [15]) (sections/08-resource-requirements.tex) (sections/09-conclusion.tex [16
 
 ]) (sections/10-references.tex
 LaTeX Font Info:    Font shape `T1/phv/m/sc' will be
@@ -1632,7 +1627,7 @@ LaTeX Font Info:    Font shape `T1/phv/m/sc' will be
  [17] [18]) (sections/11-appendices.tex) (sections/11b-readability-pilot.tex [19
 
 ]
-<figures/readability-pilot.pdf, id=384, 505.89pt x 195.129pt>
+<figures/readability-pilot.pdf, id=383, 505.89pt x 195.129pt>
 File: figures/readability-pilot.pdf Graphic file (type pdf)
 <use figures/readability-pilot.pdf>
 Package pdftex.def Info: figures/readability-pilot.pdf  used on input line 14.
@@ -1657,17 +1652,17 @@ Package logreq Info: Writing requests to 'main.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 22314 strings out of 467392
- 392453 string characters out of 5405639
- 1258368 words of memory out of 5000000
- 51257 multiletter control sequences out of 15000+600000
- 669323 words of font info for 87 fonts, out of 8000000 for 9000
+ 22310 strings out of 467392
+ 392367 string characters out of 5405639
+ 1264362 words of memory out of 5000000
+ 51253 multiletter control sequences out of 15000+600000
+ 665851 words of font info for 85 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  67i,13n,86p,1417b,1536s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\naman\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb>
-Output written on main.pdf (27 pages, 614272 bytes).
+ <C:\Users\naman\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ectt1200.pk><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvb8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvr8a.pfb><C:/Users/naman/AppData/Local/Programs/MiKTeX/fonts/type1/urw/helvetic/uhvro8a.pfb>
+Output written on main.pdf (27 pages, 605831 bytes).
 PDF statistics:
- 530 PDF objects out of 1000 (max. 8388607)
+ 525 PDF objects out of 1000 (max. 8388607)
  73 named destinations out of 1000 (max. 500000)
  227 words of extra memory for PDF output out of 10000 (max. 10000000)
 
