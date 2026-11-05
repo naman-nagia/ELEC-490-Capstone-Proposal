@@ -2,6 +2,17 @@
 
 Verification will check metric calculations against independently established reference results and assess data handling, pipeline integration, reproducibility, and performance. Validation will assess whether the measurements support their intended interpretation and the research questions. Each metric owner will document the test inputs, procedure, expected results, acceptance criteria, and associated requirement and prototype IDs.
 
+Figure~\ref{fig:test-setup} shows the test environment: a pinned Python environment on the reference workstation, with inputs growing from controlled fixtures to the sample and then the full snapshot. Verification checks technical requirements. Validation checks stakeholder needs: SN-1 and SN-4 through hand-checked evidence of what each metric means (T02, T04, T05.5), SN-2 through the code comparison (T09), and SN-3 through a repeat run by a second team member (T07).
+
+A finding counts as supported only when the metric's validation supports that interpretation, the 95\% confidence interval of Cliff's $\delta$ lies outside the negligible band $|\delta| < 0.147$~\cite{romano2006cliff}, and the direction agrees between the sample and the full dataset. Anything else is reported as inconclusive.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/test-setup.pdf}
+\caption{Test setup: inputs of increasing scale pass through the pipeline under test, and each output type is judged by the listed reference.}
+\label{fig:test-setup}
+\end{figure}
+
 \CourseSubsection{Metric Verification and Validation}
 
 \begin{singlespace}
@@ -36,8 +47,32 @@ T04 & Clone coverage
 \addlinespace[3pt]
 
 T05 & Readability
-& Compare implemented scores with reference calculations; separately assess whether the scores support the intended readability interpretation.\\
+& Compare implemented scores with reference calculations; separately assess whether the scores support the intended readability interpretation (Table~\ref{tab:readability-tests}).\\
 
+\end{longtable}
+\end{singlespace}
+
+\CourseSubsection{Readability Test Plan}
+
+Table~\ref{tab:readability-tests} details the critical tests of T05, which belong to the metric prototype (P2) and repeat on the integrated pipeline (P3). Appendix~\ref{app:requirements} lists T05.1 to T05.4.
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.15\linewidth-2\tabcolsep\relax} L{\dimexpr0.40\linewidth-2\tabcolsep\relax} L{\dimexpr0.36\linewidth-2\tabcolsep\relax}@{}}
+\caption{Critical readability tests, with requirements and milestones.}\label{tab:readability-tests}\\
+\rowcolor{MidGray}
+\TableHeader{Test} & \TableHeader{Traces to} & \TableHeader{Procedure and data} & \TableHeader{Pass criterion}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Test} & \TableHeader{Traces to} & \TableHeader{Procedure and data} & \TableHeader{Pass criterion}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+T05.5 & RD-10; M6 & Validation. A team member reads the 20 highest-graded and 20 lowest-graded skills and records whether each grade fits the text. & All 40 are reviewed and recorded. If fewer than 30 fit, we state that the grade does not separate difficulty for skills.\\
+\addlinespace[3pt]
+T05.6 & RD-4, RD-5, RD-6, RD-7; M3, M4 & Fault injection with non-English text, under 30 words, empty body, malformed YAML, and an unclosed code fence. & Each case gets the expected status and null grade; no crash; one row per \texttt{file\_sha}; output labels say reading-level estimate, not quality.\\
 \end{longtable}
 \end{singlespace}
 
@@ -71,6 +106,16 @@ T07\newline Reproducibility
 T08\newline Performance
 & Measure elapsed runtime and peak memory for the workload and workstation specified in the performance requirements.
 & Runtime and peak memory satisfy the stated acceptance limits for that workload and environment.\\
+\addlinespace[3pt]
+
+T09\newline Comparison report
+& Inspect the generated comparison tables for every metric compared with source code (SYS-3).
+& Each comparison reports the median, interquartile range, and Cliff's $\delta$ with a 95\% confidence interval.\\
+\addlinespace[3pt]
+
+T10\newline Containment
+& Run the pipeline on a fixture whose bundled script writes a marker file, and scan the replication package for text matching the fixtures (SYS-5, SYS-6).
+& The marker file is never created, and the package contains no fixture text.\\
 
 \end{longtable}
 \end{singlespace}
@@ -80,5 +125,3 @@ Initial metric verification supports M3, integration testing supports M4, and pe
 \CourseSubsection{Evaluation and Acceptance}
 
 Test records will identify the dataset or controlled inputs, configuration, expected and actual results, and pass/fail outcome. Failed checks will be investigated and affected tests repeated after corrections. Measurements that fail validation will not support interpretations beyond the evidence available; inconclusive research findings alone do not constitute a test failure.
-
-\clearpage

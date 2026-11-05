@@ -1,13 +1,8 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-The pipeline introduced in Figure~\ref{fig:system} comprises data preparation, metric calculation, and output transformation.
-GitSkills is distributed as a single SQLite database, with a Parquet copy of each table, and holds four tables: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}.
-The fields we need are queried from these tables into Python, where we rely on common data-analysis libraries: pandas and NumPy for data handling, DuckDB and PyArrow for querying the Parquet files, tiktoken for token counts, textstat for readability formulas, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots.
-A pre-processing script first transforms it for the metric scripts and filters out files that are not genuine skills (\texttt{filename}, \texttt{location\_class}, \texttt{frontmatter\_valid}).
-The cleaned data then passes to a separate calculation script for each metric, whose methods are described in Section~\ref{sec:design}.
-Finally, an output transformation script joins the results into a single metrics file used for analysis, plotting, and validation.
-The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
+The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element~\cite[Sec.~4.3]{nasa2016handbook}: F1 ingests the GitSkills tables, F2 prepares records and filters out files that are not genuine skills, F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
+We query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}, because live GitHub mining changes between runs and loading the 44~GB database into memory exceeds the limit in PF-02. Each stage writes Parquet, so a failed stage restarts without repeating earlier ones. The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
 
 \medskip
 
@@ -25,12 +20,103 @@ Near-clones will be identified using the actual skill text stored in the \texttt
 
 Pairs with different file hashes and Jaccard similarity of at least 80\% will be linked as near-clones. This threshold follows published text deduplication research and requires substantial textual overlap while allowing minor modifications. Qualifying relationships will be combined into connected clone groups, allowing multiple related skills to be grouped together even when not every pair exceeds the threshold. These groups will be mapped back to the original skill occurrences, and expanded clone coverage will be calculated as the percentage of eligible occurrences belonging to groups containing multiple skills. Exact and expanded clone coverage will be reported separately, with missing or invalid data handled separately.
 
-\CourseSubsection{Interface and performance specifications}
+\medskip
+
+\noindent\textbf{Readability Calculation Module.}
+
+Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a software element.
+F1.1 takes one representative row per distinct content, since identical files score identically, and F2.1 keeps verified files named exactly \texttt{SKILL.md} with valid front matter. F3.5.1 and F3.5.2 split each skill into description, prose, and code, because one whole-file score would mix prose with code.
+Readability formulas count words per sentence, so F3.5.3 emits each heading, list item, and table row as its own sentence; otherwise a bullet list counts as one long sentence and the median grade rises from 8.6 to 12.2. English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is free, repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables: it is an independent check on syllable counting in technical text, and the two agreed closely in the pilot ($\rho = 0.92$). Both were calibrated on general text rather than agent instructions, so we report their grades as reading-level estimates, not as measures of quality.
+Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows and scored with the linear output of Posnett's model~\cite{posnett2011simpler}, because its sigmoid output falls below 0.01 for 90\% of pilot skills.
+Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 outputs medians, interquartile ranges, Cliff's $\delta$~\cite{cliff1993dominance}, and distribution plots. Appendix~\ref{app:interfaces} records the alternatives we rejected.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/readability-functional.pdf}
+\caption{Functional decomposition of readability, from ingestion (F1.1) to outputs (O1, O2). Each box performs one transformation; arrows carry only its inputs and outputs. I-labels are pipeline interfaces and R-labels are internal to the module (Appendix~\ref{app:interfaces}).}
+\label{fig:readability-functional}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/readability-logical.pdf}
+\caption{Logical decomposition of readability. Arrows state the action between elements; each box lists its implementation and the functions of Figure~\ref{fig:readability-functional} allocated to it.}
+\label{fig:readability-logical}
+\end{figure}
+
+
+\CourseSubsection{Requirements Specifications}
+
+Requirements flow from stakeholder needs through system requirements to metric modules~\cite[Sec.~4.2]{nasa2016handbook}. The stakeholder needs are: \textbf{SN-1}, a researcher should be able to tell which established metrics have meaningful equivalents for skills; \textbf{SN-2}, a researcher should be able to compare skill metric distributions with source code; \textbf{SN-3}, a reviewer should be able to reproduce every reported value; \textbf{SN-4}, a reader should be able to see each metric's limits before relying on it; \textbf{SN-5}, the team should be able to analyze untrusted repository content safely. Table~\ref{tab:proposal-specs} lists system requirements, each metric module refines SYS-1, and Appendix~\ref{app:requirements} shows the hierarchy. Performance targets are measured on one team workstation, whose specification is recorded with T08.
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.53\linewidth-8\tabcolsep\relax} L{0.14\linewidth} L{0.09\linewidth} L{0.15\linewidth}@{}}
+\caption{System requirements, with type, rank, parent need, and test.}\label{tab:proposal-specs}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Need} & \TableHeader{Test}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Need} & \TableHeader{Test}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+SYS-1 & The pipeline shall compute size, churn, age, clone coverage, and readability for every skill eligible for that metric. & Functional; critical & SN-1 & T01--T05\\
+\addlinespace[3pt]
+SYS-2 & The pipeline shall assign every \texttt{artifacts} row one status (retained, excluded, or flagged) with a logged reason. & Functional; critical & SN-4 & T06\\
+\addlinespace[3pt]
+SYS-3 & The pipeline shall report each compared metric's median, interquartile range, and Cliff's $\delta$ with a 95\% confidence interval. & Functional; major & SN-2 & T09\\
+\addlinespace[3pt]
+SYS-6 & The pipeline shall not execute skill text or bundled files. & Safety; critical & SN-5 & T10\\
+\addlinespace[3pt]
+IF-02 & Each stage shall pass every retained occurrence, keyed by repository and path and linked by \texttt{file\_sha}, with 0 rows lost (I3, I4). & Interface; critical & SN-3 & T06\\
+\addlinespace[3pt]
+IF-03 & The output stage shall write one row per distinct skill, in Parquet and CSV, with 0 duplicates (I5). & Interface; major & SN-1 & T06\\
+\addlinespace[3pt]
+PF-01 & The pipeline shall complete a full-dataset run within 24~h (+12~h tolerance). & Performance; major & SN-3 & T08\\
+\addlinespace[3pt]
+PF-02 & The pipeline shall keep peak memory within 16~GB (+4~GB tolerance). & Performance; major & SN-3 & T08\\
+\addlinespace[3pt]
+PF-03 & A re-run with the same snapshot, configuration, and software shall reproduce identical metric tables. & Reliability; critical & SN-3 & T07\\
+\addlinespace[3pt]
+PF-04 & The lineage linker shall reach a precision of at least 0.90 ($-$0.05 tolerance) on the hand-labelled sample. & Accuracy; critical & SN-1 & T02\\
+\end{longtable}
+\end{singlespace}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.53\linewidth-8\tabcolsep\relax} L{0.14\linewidth} L{0.09\linewidth} L{0.15\linewidth}@{}}
+\caption{Main readability requirements (F3.5). Appendix~\ref{app:requirements} lists the rest.}\label{tab:readability-reqs}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Parent} & \TableHeader{Test}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Parent} & \TableHeader{Test}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RD-1 & The module shall score each part of an eligible English skill with its assigned instrument. & Functional; critical & SYS-1 & T05.2, T05.4\\
+\addlinespace[3pt]
+RD-2 & When prose contains a heading, list item, or table row, the normalizer shall output it as its own sentence. & Functional; critical & SYS-1 & T05.1\\
+\addlinespace[3pt]
+RD-10 & The team shall hand-review the 20 highest-graded and 20 lowest-graded skills and record whether each grade fits the text. & Validation; critical & RD-6 & T05.5\\
+\addlinespace[3pt]
+RD-4 & The module shall not assign a prose grade to a skill labelled non-English. & Fault; critical & SYS-2 & T05.6\\
+\addlinespace[3pt]
+RD-6 & The module shall not present a grade as a measure of skill quality. & Fault; critical & SYS-2 & T05.6\\
+\addlinespace[3pt]
+RD-S1 & The module may count vague terms and emphasis markers per 100 words~\cite{femmer2017smells}. & Functional; stretch & SN-4 & ---\\
+\end{longtable}
+\end{singlespace}
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.10\linewidth} L{\dimexpr0.4700000\linewidth-6.0000000\tabcolsep\relax} L{0.22\linewidth} L{0.21\linewidth}@{}}
-\caption{Preliminary system specifications.}\label{tab:proposal-specs}\\
+\caption{Age and clone coverage requirements (parent SYS-1).}\label{tab:age-clone-reqs}\\
 \rowcolor{MidGray}
 \TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Target} & \TableHeader{Tolerance} \\
 \midrule
@@ -41,24 +127,6 @@ Pairs with different file hashes and Jaccard similarity of at least 80\% will be
 \endhead
 \bottomrule
 \endfoot
-IF-01 & All four GitSkills tables load into Python with their documented columns & 4 of 4 tables & 0 missing columns \\
-\addlinespace[3pt]
-IF-02 & Scripts pass data keyed by \texttt{file\_sha}, with no rows lost between stages & 100\% of rows kept & 0 rows \\
-\addlinespace[3pt]
-IF-03 & Output file holds one row per distinct skill, in Parquet and CSV & 1 row per skill & 0 duplicates \\
-\addlinespace[3pt]
-PF-01 & Full-dataset run time on one workstation & $\leq$ 24 h & +12 h \\
-\addlinespace[3pt]
-PF-02 & Peak memory use, kept low through batching & $\leq$ 16 GB & +4 GB \\
-\addlinespace[3pt]
-PF-03 & Re-running the pipeline reproduces the same metrics & Identical output & 0 differences \\
-\addlinespace[3pt]
-PF-04 & Precision of cross-copy lineage links on the hand-labelled sample & $\geq$ 0.90 & $-$0.05 \\
-\addlinespace[3pt]
-PF-05 & Spearman correlation between Flesch--Kincaid grade and the mean human rating on the 100-skill readability sample & $|\rho| \geq$ 0.5 & $-$0.1 \\
-\addlinespace[3pt]
-PF-06 & Agreement between the two readability raters (Krippendorff's $\alpha$~\cite{krippendorff2004}) & $\geq$ 0.80 & $-$0.13 \\
-\addlinespace[3pt]
 AGE-01 & The Age module shall calculate repository-level age in days from \texttt{first\_commit\_at} to a fixed collection date. & Correct age for every valid record & 0 calculation errors \\
 \addlinespace[3pt]
 AGE-02 & The Age module shall flag missing, invalid, or future-dated timestamps without assigning a numerical age. & 100\% of invalid records flagged & 0 incorrect ages \\
@@ -71,8 +139,18 @@ CL-03 & The Clone Coverage module shall form connected clone groups and report e
 \end{longtable}
 \end{singlespace}
 
+Figure~\ref{fig:critical-rd2} gives the context for RD-2. RD-10 replaces a rating study with a check that costs about 1.3~h: at a median of 476 words and 238 words per minute~\cite{brysbaert2019read}, 40 skills take about 80 minutes, and the extremes show whether a grade separates clearly harder text from clearly easier text. This check supports the wording we use for results and is not a model of human readability.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/critical-rd2.pdf}
+\caption{Relationships of critical requirement RD-2 to its need, parent, functions, logical elements, rationale, verification, and derived requirement.}
+\label{fig:critical-rd2}
+\end{figure}
+
 \CourseSubsection{Risks and safety hazards}
-The project is purely computational, so it carries no physical, health, or safety hazards.
-The main technical risk is the dataset's size (about 44 GB), which is managed by reading the per-table Parquet files in batches rather than loading everything into memory.
-Since the data comes from public GitHub repositories with commit authors already anonymized, we will not attempt to identify individuals, and we will respect each repository's license when quoting skill content.
-\clearpage
+We use the ISO~31000 sense of risk, the effect of uncertainty on objectives~\cite{iso31000}, and size each risk from measured exposure. The pipeline is desk-based software with no physical hazard.
+\textbf{Untrusted code.} GitSkills holds 7.26 million bundled files from unreviewed repositories, and running one could compromise a team machine, so the pipeline reads them only as text (SYS-6, T10).
+\textbf{Privacy.} The data is public and commit authors are coded, which fits the TCPS~2 exemptions for public and anonymous information~\cite[Arts.~2.2, 2.4]{tcps2022}. Repository names remain identifiable, so we report aggregates only; we will confirm with the supervisor that no ethics review is needed.
+\textbf{Licensing.} Skill text stays under each repository's license~\cite{gitskills2027}, so we release derived metrics only (SYS-5).
+\textbf{Scale.} The 44~GB database is 2.75 times the 16~GB memory limit, which batched reads manage.

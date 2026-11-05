@@ -1,17 +1,194 @@
 \clearpage
-\CourseSection{Readability Pilot}\label{app:readability-pilot}
+\CourseSection{Functional Description Detail}\label{app:interfaces}
 
-We ran the readability method on the official 13,000-skill GitSkills sample to check that it is feasible and to choose the preprocessing.
-Of the 13,000 distinct skills, 237 were not named exactly \texttt{SKILL.md}, 1,566 had invalid front matter, 555 were too short (a body under 300 characters or fewer than 30 words of prose), and 2,328 were not in English.
+Figure~\ref{fig:pipeline-decomposition} supports Section~\ref{sec:functional-description} by showing the whole pipeline's functions, interfaces, and allocated elements. Table~\ref{tab:interfaces} defines each interface, and Table~\ref{tab:readability-interfaces} defines the flows inside the readability module of Figure~\ref{fig:readability-functional}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/pipeline-decomposition.pdf}
+\caption{Top-level functional decomposition of the pipeline, allocated to logical elements.}
+\label{fig:pipeline-decomposition}
+\end{figure}
+
+We use pandas and NumPy for data handling, DuckDB and PyArrow for queries, tiktoken for token counts, textstat for readability formulas, fastText for language identification, datasketch for MinHash similarity, SciPy and powerlaw for statistics, and Matplotlib for plots. Table~\ref{tab:design-decisions} records the main design decisions.
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.08\linewidth} L{\dimexpr0.35\linewidth-2\tabcolsep\relax} L{\dimexpr0.57\linewidth-2\tabcolsep\relax}@{}}
+\caption{Key design decisions and rejected alternatives.}\label{tab:design-decisions}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Decision} & \TableHeader{Alternatives rejected}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Decision} & \TableHeader{Alternatives rejected}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+DD-1 & Query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}. & Live GitHub mining changes between runs (breaks PF-03). Loading the 44~GB database into pandas exceeds PF-02.\\
+\addlinespace[3pt]
+DD-2 & Score each skill part separately, using the Flesch--Kincaid grade with Coleman--Liau as a cross-check. & One whole-file score mixes prose with code. Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog} also rely on syllables and track Flesch--Kincaid closely in the pilot ($\rho = 0.95$, $0.91$), and SMOG needs 30 sentences, which 30\% of pilot skills lack. Flesch Reading Ease~\cite{flesch1948} uses the same inputs ($\rho = -0.96$). Dale--Chall~\cite{chall1995} counts technical terms as unfamiliar ($\rho = 0.54$). Learned models~\cite{crossley2019beyond} need rated training text. LLM raters change between model versions (breaks PF-03).\\
+\addlinespace[3pt]
+DD-3 & Score code with the linear output of Posnett's model~\cite{posnett2011simpler}. & Buse--Weimer~\cite{buse2010readability} and Scalabrino~\cite{scalabrino2018comprehensive} target Java, while skills mix many languages. The model's sigmoid output saturates: 90\% of pilot skills scored below 0.01.\\
+\addlinespace[3pt]
+DD-4 & Use the scripts bundled with skills as the readability code baseline. & An external corpus compares different authors and purposes. Cloning all repositories adds a large outside input. Scripts cover only about 11\% of pilot skills, so we report this limit.\\
+\end{longtable}
+\end{singlespace}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.06\linewidth} L{0.20\linewidth} L{\dimexpr0.56\linewidth-6\tabcolsep\relax} L{0.18\linewidth}@{}}
+\caption{Pipeline interfaces.}\label{tab:interfaces}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{From, to} & \TableHeader{Content and format} & \TableHeader{Requirement}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{From, to} & \TableHeader{Content and format} & \TableHeader{Requirement}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+I1 & E1 to F1 & GitSkills July 2026 release: SQLite file or per-table Parquet & IF-01\\
+I2 & F1 to F2 & Record batches of the \texttt{artifacts}, \texttt{artifact\_siblings}, and \texttt{repos} tables & IF-01\\
+I3 & F2 to F3 & One Parquet row per occurrence, keyed by repository and path, with \texttt{file\_sha} and status & IF-02, SYS-2\\
+I4 & F3 to F4 & One Parquet table per metric, keyed by \texttt{file\_sha} & IF-02\\
+I5 & F4 to F5 & Metrics file with one row per distinct skill, in Parquet and CSV & IF-03\\
+I6 & E2 to F3.2 & Git history of the cloned churn-validation repositories & SYS-1\\
+I7 & F5 to reader & Statistics tables and vector figures & SYS-3\\
+\end{longtable}
+\end{singlespace}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.07\linewidth} L{0.23\linewidth} L{\dimexpr0.70\linewidth-4\tabcolsep\relax}@{}}
+\caption{Readability module interfaces.}\label{tab:readability-interfaces}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{From, to} & \TableHeader{Content}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{From, to} & \TableHeader{Content}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+R1 & F3.5.1 to F3.5.2 & Skill body without front matter\\
+R2 & F3.5.1 to F3.5.6 & Description string\\
+R3 & F3.5.2 to F3.5.3 & Prose Markdown\\
+R4 & F3.5.2 to F3.5.7 & Fenced code blocks\\
+R5 & F3.5.3 to F3.5.4 & Sentence text\\
+R6 & F3.5.4 to F3.5.5 & English sentence text, or a non-English status with no text\\
+R7 & F3.5.7 to F3.5.8 & Complete 10-line code windows\\
+R8 & F2.1 to F3.5.7 & Bundled script text from \texttt{artifact\_siblings}\\
+R9 & F3.5.5 to F3.5.9 & Body prose grades\\
+R10 & F3.5.6 to F3.5.9 & Description grade\\
+R11 & F3.5.8 to F3.5.9 & Median linear code score per skill\\
+\end{longtable}
+\end{singlespace}
+
+\clearpage
+\CourseSection{Requirements and Test Detail}\label{app:requirements}
+
+Figure~\ref{fig:requirements-hierarchy} traces the critical branches from stakeholder needs to tests, and Figure~\ref{fig:critical-rd6} gives the context for RD-6. Buse and Weimer built a readability model from a large rater pool~\cite{buse2010readability}. We use no rating scale or rater-agreement statistic, so our hand review checks only the extreme grades, and we make no claim to measure human readability.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/requirements-hierarchy.pdf}
+\caption{Requirements hierarchy from stakeholder needs to tests, with the readability branch expanded.}
+\label{fig:requirements-hierarchy}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{figures/critical-rd6.pdf}
+\caption{Relationships of critical requirement RD-6.}
+\label{fig:critical-rd6}
+\end{figure}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.09\linewidth} L{\dimexpr0.59\linewidth-6\tabcolsep\relax} L{0.18\linewidth} L{0.14\linewidth}@{}}
+\caption{Further requirements.}\label{tab:readability-reqs-more}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Parent; test}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Type; rank} & \TableHeader{Parent; test}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RD-1.1 & The module shall compute the Flesch--Kincaid grade and Coleman--Liau index for the body prose. & Functional; major & RD-1; T05.2\\
+\addlinespace[3pt]
+RD-1.4 & The module shall compute the linear Posnett score for each complete 10-line window of code. & Functional; major & RD-1; T05.4\\
+\addlinespace[3pt]
+RD-3 & The team shall audit the language labels of 200 skills and report the English precision. & Accuracy; major & RD-1; T05.3\\
+\addlinespace[3pt]
+RD-7 & The module shall write one row per distinct \texttt{file\_sha} with its scores, language, and status (I4). & Interface; major & IF-03; T05.6\\
+\addlinespace[3pt]
+SYS-5 & The replication package shall not contain \texttt{SKILL.md} or bundled-file text. & Compliance; major & SN-3; T10\\
+\addlinespace[3pt]
+IF-01 & The data loader shall load all four GitSkills tables with their documented columns (I1, I2). & Interface; major & SN-3; T06\\
+\addlinespace[3pt]
+RD-1.3 & The module shall compute the Flesch--Kincaid grade of each description of at least 5 words. & Functional; major & RD-1; T05.2\\
+\addlinespace[3pt]
+RD-2.1 & The segmenter shall assign every line of 20 hand-marked files to the correct stream. & Accuracy; major & RD-2; T05.1\\
+\addlinespace[3pt]
+RD-5 & The module shall not assign a prose grade to fewer than 30 words of prose. & Fault; major & SYS-2; T05.6\\
+\addlinespace[3pt]
+RD-9 & The module shall record the textstat and fastText versions with each run. & Reliability; minor & PF-03; T07\\
+\addlinespace[3pt]
+RD-S2 & The module may report readability across monthly cohorts of first commits. & Functional; stretch & SN-1; ---\\
+\addlinespace[3pt]
+RD-S3 & The module may relate readability to copy count and later edits. & Functional; stretch & SN-1; ---\\
+\end{longtable}
+\end{singlespace}
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.09\linewidth} L{0.13\linewidth} L{\dimexpr0.42\linewidth-6\tabcolsep\relax} L{0.36\linewidth}@{}}
+\caption{Further readability tests (prototype P2).}\label{tab:readability-tests-more}\\
+\rowcolor{MidGray}
+\TableHeader{Test} & \TableHeader{Traces to} & \TableHeader{Procedure and data} & \TableHeader{Pass criterion}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{Test} & \TableHeader{Traces to} & \TableHeader{Procedure and data} & \TableHeader{Pass criterion}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+T05.1 & RD-2, RD-2.1; M3 & Run segmentation and normalization on 20 hand-marked files covering lists, tables, nested fences, and HTML. & Every heading, list item, and table row is one sentence; every line reaches the correct stream.\\
+\addlinespace[3pt]
+T05.2 & RD-1.1, RD-1.3; M3 & Compare formula outputs with hand calculations from the published formulas on 20 passages. & Word and sentence counts match; grades agree within 0.5.\\
+\addlinespace[3pt]
+T05.3 & RD-3; M3 & Audit the language label on 200 randomly drawn skills. & Audit complete and precision reported. Below 0.90 triggers a review of the identifier.\\
+\addlinespace[3pt]
+T05.4 & RD-1.4; M3 & Compare scores with hand calculations on 10 windows, after checking the coefficients against~\cite{posnett2011simpler}. & Scores agree within 0.01.\\
+\addlinespace[3pt]
+\end{longtable}
+\end{singlespace}
+
+\clearpage
+\CourseSection{Readability Pilot and Supporting Detail}\label{app:readability-pilot}
+
+We ran the method on the official 13,000-skill GitSkills sample to check feasibility and choose the preprocessing.
+Of the 13,000 distinct skills, 237 were not named exactly \texttt{SKILL.md}, 1,566 had invalid front matter, 555 were too short (a body under 300 characters or fewer than 30 words of prose), and 2,328 failed a simple English check.
 This left 8,314 skills from 5,567 repositories.
-Figure~\ref{fig:readability-pilot}a shows why the Markdown must be converted into sentences before scoring: on raw text, each bullet list counts as one long sentence, and the median grade rises from 8.6 to 12.2.
-Figure~\ref{fig:readability-pilot}b shows that skill sentences are short (a median of 9 words), but formulas that weight word length, such as Coleman--Liau, place the same text near grade 13, which reflects technical vocabulary.
-Descriptions are usually a single long sentence, and they read about four grades harder than the bodies.
-The pilot code uses textstat~\cite{textstat}; whole-sample scoring took about 6\,ms per skill on one laptop core, or roughly 3\,h for the full 1.88 million distinct skills.
+Figure~\ref{fig:readability-pilot}a shows why Markdown must become sentences before scoring: on raw text, the median grade rises from 8.6 to 12.2.
+Figure~\ref{fig:readability-pilot}b shows that skill sentences are short (a median of 9 words), but Coleman--Liau, which weights word length, places the same text near grade 13, which reflects technical vocabulary.
+Descriptions read about four grades harder than bodies. The prose scoring used textstat~\cite{textstat}.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{figures/readability-pilot.pdf}
-\caption{Readability pilot on 8,314 English skills from the 13,000-skill GitSkills sample. (a)~Flesch--Kincaid grade of the body prose, with the Markdown converted to sentences and as raw text. (b)~Body grade under four formulas, and Flesch--Kincaid grade of the front-matter description. Boxes show the interquartile range, and whiskers extend to 1.5 times the IQR.}
+\caption{Readability pilot on 8,314 English skills. (a)~Flesch--Kincaid grade of the body prose, with the Markdown converted to sentences and as raw text. (b)~Body grade under both formulas, and Flesch--Kincaid grade of the description. Boxes show the interquartile range, and whiskers extend to 1.5 times that range.}
 \label{fig:readability-pilot}
 \end{figure}
+
+Figure~\ref{fig:readability-pilot}b also shows the two formulas we kept. For code, 5,628 of the 8,314 skills contain a fenced block, 4,304 have at least one complete 10-line window of code, and 886 have a window of bundled script. Tokens came from an approximate language-neutral tokenizer, so scores are indicative. The median linear score was $-12.56$ for code blocks (interquartile range $-18.62$ to $-7.97$) and $-12.19$ for bundled scripts ($-15.32$ to $-9.70$), with a negligible overall difference (Cliff's $\delta = -0.016$). Within the 558 skills having both, scripts scored higher in 62\% of cases, with a median difference of $2.21$, so the paired comparison will be reported as well. Applying the model's sigmoid would place 90\% of code-block skills and 98\% of script skills below 0.01, which motivates the linear output (DD-3). Because the score grows with line count, windows of other lengths are not comparable.
+
+
