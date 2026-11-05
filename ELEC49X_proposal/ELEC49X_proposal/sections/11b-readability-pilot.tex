@@ -10,7 +10,7 @@ Figure~\ref{fig:pipeline-decomposition} supports Section~\ref{sec:functional-des
 \label{fig:pipeline-decomposition}
 \end{figure}
 
-The physical elements are DuckDB and PyArrow for the data loader, PyYAML and Python regular expressions for the skill parser and Markdown normalizer, fastText~\cite{joulin2017bag} for the language identifier, textstat~\cite{textstat} for the prose scorer, Python for the code windower and scorer, pandas and Parquet for the results writer, and SciPy and Matplotlib for analysis and plots. Other modules add tiktoken, datasketch, and powerlaw. Table~\ref{tab:design-decisions} records the main design decisions.
+The physical elements are DuckDB and PyArrow for the data loader, PyYAML and markdown-it for the skill parser and Markdown normalizer, fastText~\cite{joulin2017bag} for the language identifier, textstat~\cite{textstat} for the prose scorer, Python for the code windower and scorer, pandas and Parquet for the results writer, and SciPy and Matplotlib for analysis and plots. Other modules add Anthropic's tokenizer and datasketch. Table~\ref{tab:design-decisions} records the main design decisions.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
@@ -28,9 +28,9 @@ The physical elements are DuckDB and PyArrow for the data loader, PyYAML and Pyt
 \endfoot
 DD-1 & Query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}. Driven by SN-3, PF-02, PF-03. & Live GitHub mining changes between runs (breaks PF-03). Loading the 44~GB database into pandas exceeds PF-02.\\
 \addlinespace[3pt]
-DD-2 & Score each skill part separately, using the Flesch--Kincaid grade with Coleman--Liau as a cross-check. Driven by SN-1, RD-1, PF-03. & One whole-file score mixes prose with code. Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog} also rely on syllables and track Flesch--Kincaid closely in the pilot ($\rho = 0.95$, $0.91$), and SMOG needs 30 sentences, which 30\% of pilot skills lack. Flesch Reading Ease~\cite{flesch1948} uses the same inputs ($\rho = -0.96$). Dale--Chall~\cite{chall1995} counts technical terms as unfamiliar ($\rho = 0.54$). Learned models~\cite{crossley2019beyond} need rated training text. LLM raters change between model versions (breaks PF-03).\\
+DD-2 & Score each skill part separately, using the Flesch--Kincaid grade with Coleman--Liau as a cross-check. Driven by SN-1, RD-1, PF-03. & One whole-file score mixes prose with code. Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog} also rely on syllables and track Flesch--Kincaid in the pilot ($\rho = 0.95$, $0.89$), and SMOG needs 30 sentences, which 32\% of pilot skills lack. Flesch Reading Ease~\cite{flesch1948} uses the same inputs ($\rho = -0.95$). Dale--Chall~\cite{chall1995} counts technical terms as unfamiliar ($\rho = 0.65$). Learned models~\cite{crossley2019beyond} need rated training text. LLM labelling at scale needs paid calls and human-annotated checks~\cite{wan2024tnt}, which conflicts with the \$0 budget.\\
 \addlinespace[3pt]
-DD-3 & Score code with the linear output of Posnett's model~\cite{posnett2011simpler}. Driven by SN-2, RD-1.4. & Buse--Weimer~\cite{buse2010readability} and Scalabrino~\cite{scalabrino2018comprehensive} target Java, while skills mix many languages. The model's sigmoid output saturates: 90\% of pilot skills scored below 0.01.\\
+DD-3 & Score code with the linear output of Posnett's model~\cite{posnett2011simpler}. Driven by SN-2, RD-1.4. & Scalabrino's model tracked developers better on AI-generated Java (MCC $= 0.325$)~\cite{sergeyuk2024reassessing,scalabrino2018comprehensive}, and Buse--Weimer~\cite{buse2010readability} is the older baseline, but both target Java while skills mix many languages. The sigmoid output saturates: 91\% of pilot skills score below 0.01.\\
 \addlinespace[3pt]
 DD-4 & Use the scripts bundled with skills as the readability code baseline. Driven by SN-2, SYS-3. & An external corpus compares different authors and purposes. Cloning all repositories adds a large outside input. Scripts cover only about 11\% of pilot skills, so we report this limit.\\
 \end{longtable}
@@ -52,7 +52,7 @@ DD-4 & Use the scripts bundled with skills as the readability code baseline. Dri
 \endfoot
 I1 & E1 to F1 & GitSkills July 2026 release: SQLite file or per-table Parquet & IF-01\\
 I2 & F1 to F2 & Record batches of the \texttt{artifacts}, \texttt{artifact\_siblings}, and \texttt{repos} tables & IF-01\\
-I3 & F2 to F3 & One Parquet row per occurrence, keyed by repository and path, with \texttt{file\_sha} and status & IF-02, SYS-2\\
+I3 & F2 to F3 & One Parquet row per distinct skill, keyed by \texttt{file\_sha}, with its front matter, prose, code, and status; bundle files keyed by repository and path & IF-02, SYS-2\\
 I4 & F3 to F4 & One Parquet table per metric, keyed by \texttt{file\_sha} & IF-02\\
 I5 & F4 to F5 & Metrics file with one row per distinct skill, in Parquet and CSV & IF-03\\
 I6 & E2 to F3.2 & Git history of the cloned churn-validation repositories & SYS-1\\
@@ -74,17 +74,17 @@ I7 & F5 to reader & Statistics tables and vector figures & SYS-3\\
 \endhead
 \bottomrule
 \endfoot
-R1 & F3.5.1 to F3.5.2 & Skill body without front matter\\
-R2 & F3.5.1 to F3.5.6 & Description string\\
-R3 & F3.5.2 to F3.5.3 & Prose Markdown\\
-R4 & F3.5.2 to F3.5.7 & Fenced code blocks\\
-R5 & F3.5.3 to F3.5.4 & Sentence text\\
-R6 & F3.5.4 to F3.5.5 & English sentence text, or a non-English status with no text\\
-R7 & F3.5.7 to F3.5.8 & Complete 10-line code windows\\
-R8 & F2.1 to F3.5.7 & Bundled script text from \texttt{artifact\_siblings}\\
-R9 & F3.5.5 to F3.5.9 & Body prose grades\\
-R10 & F3.5.6 to F3.5.9 & Description grade\\
-R11 & F3.5.8 to F3.5.9 & Median linear code score per skill\\
+R1 & F2.2 to F2.3 & Skill body without front matter\\
+R2 & F2.2 to F3.5.4 & Description string\\
+R3 & F2.3 to F3.5.1 & Prose Markdown\\
+R4 & F2.3 to F3.5.5 & Fenced code blocks\\
+R5 & F3.5.1 to F3.5.2 & Sentence text\\
+R6 & F3.5.2 to F3.5.3 & English sentence text, or a non-English status with no text\\
+R7 & F3.5.5 to F3.5.6 & Complete 10-line code windows\\
+R8 & F2.1 to F3.5.5 & Bundled script text from \texttt{artifact\_siblings}\\
+R9 & F3.5.3 to F3.5.7 & Body prose grades\\
+R10 & F3.5.4 to F3.5.7 & Description grade\\
+R11 & F3.5.6 to F3.5.7 & Median linear code score per skill\\
 \end{longtable}
 \end{singlespace}
 
@@ -107,13 +107,13 @@ Figure~\ref{fig:requirements-hierarchy} traces the critical branches from stakeh
 \endhead
 \bottomrule
 \endfoot
-RD-1.1 & The module shall compute the Flesch--Kincaid grade of the body prose. & Functional; major & RD-1; T05.2\\
+RD-1.1 & The Flesch--Kincaid formula was derived for Navy training material~\cite{kincaid1975}; a software engineering study has also applied it to LLM prompts~\cite{santana2025prompting}. & We apply it to agent instructions, so grades are estimates (RD-6).\\
 \addlinespace[3pt]
-RD-1.2 & The module shall compute the Coleman--Liau index of the body prose. & Functional; minor & RD-1; T05.2\\
+RD-1.4 & Posnett's model was fitted to 120 students' 1-to-5 ratings of 100 Java snippets of 4 to 11 lines~\cite{posnett2011simpler}, and it tracked developers weakly on AI-generated Java~\cite{sergeyuk2024reassessing}. & We score many languages with an approximate tokenizer, so scores are indicative.\\
 \addlinespace[3pt]
-RD-1.4 & Posnett's model was fitted to human ratings of short Java snippets~\cite{posnett2011simpler,buse2010readability}. & We score many languages with an approximate tokenizer, so scores are indicative.\\
+RD-6 & On agent context files, Flesch Reading Ease tracked one inspector's Easy, Normal, or Hard labels only weakly, $\rho = 0.19$ on 100 files~\cite{chatlatanagulchai2026agent}. & Skills differ from context files, and we use grades, not Reading Ease.\\
 \addlinespace[3pt]
-RD-10 & Adults read non-fiction silently at about 238 words per minute~\cite{brysbaert2019read}. & Skills are technical, so 40 skills at the 476-word median may take longer than 80 minutes.\\
+RD-10 & The same study inspected files from each score band~\cite{chatlatanagulchai2026agent}; adults read non-fiction at about 238 words per minute~\cite{brysbaert2019read}. & We review only the extremes, and technical text may take longer than the estimated 75 minutes at the 444-word median.\\
 \addlinespace[3pt]
 DD-1 & DuckDB is built for analytical queries inside a process~\cite{raasveldt2019duckdb}. & Our workload is 44~GB on one workstation, which T08 measures.\\
 \end{longtable}
@@ -147,7 +147,9 @@ DD-1 & DuckDB is built for analytical queries inside a process~\cite{raasveldt20
 \endhead
 \bottomrule
 \endfoot
-RD-1.1 & The module shall compute the Flesch--Kincaid grade and Coleman--Liau index for the body prose. & Functional; major & RD-1; T05.2\\
+RD-1.1 & The module shall compute the Flesch--Kincaid grade of the body prose. & Functional; major & RD-1; T05.2\\
+\addlinespace[3pt]
+RD-1.2 & The module shall compute the Coleman--Liau index of the body prose. & Functional; minor & RD-1; T05.2\\
 \addlinespace[3pt]
 RD-1.4 & The module shall compute the linear Posnett score for each complete 10-line window of code. & Functional; major & RD-1; T05.4\\
 \addlinespace[3pt]
@@ -163,6 +165,10 @@ RD-1.3 & The module shall compute the Flesch--Kincaid grade of each description 
 \addlinespace[3pt]
 RD-2.1 & The segmenter shall assign each line of a skill to exactly one stream (description, prose, or code). & Functional; major & RD-2; T05.1\\
 \addlinespace[3pt]
+RD-2.2 & When a paragraph spans several lines, the normalizer shall join its lines into one text unit. & Functional; major & RD-2; T05.1\\
+\addlinespace[3pt]
+RD-2.3 & The normalizer shall exclude inline code from the scored prose. & Functional; major & RD-2; T05.1\\
+\addlinespace[3pt]
 RD-5 & The module shall not assign a prose grade to fewer than 30 words of prose. & Fault; major & SYS-2; T05.6\\
 \addlinespace[3pt]
 RD-9 & The module shall record the formula-library versions with each run. & Reliability; minor & PF-03; T07\\
@@ -170,6 +176,10 @@ RD-9 & The module shall record the formula-library versions with each run. & Rel
 RD-S2 & The module may report readability across monthly cohorts of first commits. & Functional; stretch & SN-1; ---\\
 \addlinespace[3pt]
 RD-S3 & The module may relate readability to copy count. & Functional; stretch & SN-1; ---\\
+\addlinespace[3pt]
+RD-S4 & The module may compute Flesch Reading Ease for comparison with prior work on context files. & Functional; stretch & SN-2; ---\\
+\addlinespace[3pt]
+RD-S5 & The module may apply Scalabrino's model to Java code blocks. & Functional; stretch & SN-2; ---\\
 \end{longtable}
 \end{singlespace}
 
@@ -187,13 +197,13 @@ RD-S3 & The module may relate readability to copy count. & Functional; stretch &
 \endhead
 \bottomrule
 \endfoot
-T05.1 & RD-2, RD-2.1; M3 & Run segmentation and normalization on 20 hand-marked files covering lists, tables, nested fences, and HTML. & Every heading, list item, and table row is one sentence; every line reaches the correct stream.\\
+T05.1 & RD-2, RD-2.1 to RD-2.3; M3 & Run segmentation and normalization on 20 hand-marked files covering lists, tables, nested fences, hard-wrapped paragraphs, and HTML, including Mozilla's bug-filing skill~\cite{mozilla2026bugfiling}. & Every heading, list item, and table row is one sentence; wrapped lines are joined; inline code is absent; every line reaches the correct stream.\\
 \addlinespace[3pt]
 T05.2 & RD-1.1 to RD-1.3; M3 & Compare formula outputs with hand calculations from the published formulas on 20 passages. & Word and sentence counts match; grades agree within 0.5.\\
 \addlinespace[3pt]
 T05.3 & RD-3; M3 & Audit the language label on 200 randomly drawn skills. & Audit complete and precision reported. Below 0.90 triggers a review of the identifier.\\
 \addlinespace[3pt]
-T05.4 & RD-1.4; M3 & Compare scores with hand calculations on 10 windows, after checking the coefficients against~\cite{posnett2011simpler}. & Scores agree within 0.01.\\
+T05.4 & RD-1.4; M3 & Compare scores with hand calculations from the published equation~\cite{posnett2011simpler} on 10 windows. & Scores agree within 0.01.\\
 \addlinespace[3pt]
 \end{longtable}
 \end{singlespace}
@@ -202,19 +212,18 @@ T05.4 & RD-1.4; M3 & Compare scores with hand calculations on 10 windows, after 
 \CourseSection{Readability Pilot and Supporting Detail}\label{app:readability-pilot}
 
 We ran the method on the official 13,000-skill GitSkills sample to check feasibility and choose the preprocessing.
-Of the 13,000 distinct skills, 237 were not named exactly \texttt{SKILL.md}, 1,566 had invalid front matter, 555 were too short (a body under 300 characters or fewer than 30 words of prose), and 2,328 failed a simple English check.
-This left 8,314 skills from 5,567 repositories.
-Figure~\ref{fig:readability-pilot}a shows why Markdown must become sentences before scoring: on raw text, the median grade rises from 8.6 to 12.2.
+Of the 13,000 distinct skills, 237 were not named exactly \texttt{SKILL.md}, 1,566 had invalid front matter, 679 were too short (a body under 300 characters or fewer than 30 words of prose), and 2,049 failed a simple English check.
+This left 8,469 skills from 5,653 repositories.
+Figure~\ref{fig:readability-pilot}a shows why the Markdown must be parsed before scoring: on raw text, the median grade rises from 9.1 to 12.2.
 Figure~\ref{fig:readability-pilot}b shows that skill sentences are short (a median of 9 words), but Coleman--Liau, which weights word length, places the same text near grade 13, which reflects technical vocabulary.
-Descriptions read about four grades harder than bodies. 
+Descriptions read about 3.6 grades harder than bodies.
+Keeping inline code as a one-word token instead of removing it lowers the median grade from 9.1 to 8.9. List-heavy skills did not read easier in our sample ($\rho = 0.19$ between list share and grade), although list-heavy files scored as easier in the context-file study~\cite{chatlatanagulchai2026agent}. The median Flesch Reading Ease of 46.9 falls within the 42.4 to 51.4 reported for context files. As a worked example, the body of Mozilla's bug-filing skill~\cite{mozilla2026bugfiling} grades at 8.1, and its 63-word description at 8.9, about four grades easier than the median description; 20 of its 30 text blocks are hard-wrapped.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth,keepaspectratio]{figures/readability-pilot.pdf}
-\caption{Readability pilot on 8,314 English skills. (a)~Flesch--Kincaid grade of the body prose, with the Markdown converted to sentences and as raw text. (b)~Body grade under both formulas, and Flesch--Kincaid grade of the description. Boxes show the interquartile range, and whiskers extend to 1.5 times that range.}
+\caption{Readability pilot on English skills from the 13,000-skill GitSkills sample. (a)~Flesch--Kincaid grade of the body prose, with the Markdown parsed and as raw text. (b)~Body grade under both formulas, and Flesch--Kincaid grade of the description. Boxes show the interquartile range, and whiskers extend to 1.5 times that range.}
 \label{fig:readability-pilot}
 \end{figure}
 
-Figure~\ref{fig:readability-pilot}b also shows the two formulas we kept. For code, 5,628 of the 8,314 skills contain a fenced block, 4,304 have at least one complete 10-line window of code, and 886 have a window of bundled script. Tokens came from an approximate language-neutral tokenizer, so scores are indicative. The median linear score was $-12.56$ for code blocks (interquartile range $-18.62$ to $-7.97$) and $-12.19$ for bundled scripts ($-15.32$ to $-9.70$), with a negligible overall difference (Cliff's $\delta = -0.016$). Within the 558 skills having both, scripts scored higher in 62\% of cases, with a median difference of $2.21$, so the paired comparison will be reported as well. Applying the model's sigmoid would place 90\% of code-block skills and 98\% of script skills below 0.01, which motivates the linear output (DD-3). Because the score grows with line count, windows of other lengths are not comparable.
-
-
+For code, 5,972 of the 8,469 skills contain a fenced block, 4,570 have at least one complete 10-line window of code, and 901 have a window of bundled script. Tokens came from an approximate language-neutral tokenizer and entropy from bytes, so scores are indicative. The median linear score was $-12.32$ for code blocks (interquartile range $-18.17$ to $-7.99$) and $-11.75$ for bundled scripts ($-14.89$ to $-9.13$), a negligible overall difference (Cliff's $\delta = -0.044$). Within the 586 skills having both, scripts scored higher in 65\% of cases, with a median difference of $2.65$, so the paired comparison will be reported as well. Applying the model's sigmoid would place 91\% of code-block skills and 98\% of script skills below 0.01, which motivates the linear output (DD-3). Because the score grows with line count, windows of other lengths are not comparable.

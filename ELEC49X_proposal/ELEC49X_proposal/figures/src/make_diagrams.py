@@ -80,15 +80,15 @@ def readability_functional():
     e1 = c.box(col[0], 55, "GitSkills\nsnapshot (E1)", w=12, h=7.5, edge=MUTED, fill=DATA)
     f1 = c.box(col[0], 38, "F1.1\nQuery artifacts\nand siblings", w=12.5, h=9)
     f2 = c.box(col[0], 20, "F2.1\nFilter eligible\nskills", w=12.5, h=8.5)
-    f351 = c.box(col[1], 29.5, "F3.5.1\nSplit front\nmatter from body", w=13)
-    f352 = c.box(col[2], 42, "F3.5.2\nSeparate code\nfrom prose", w=13)
-    f353 = c.box(col[3], 54, "F3.5.3\nConvert Markdown\nto sentences", w=13.5)
-    f354 = c.box(col[4], 54, "F3.5.4\nIdentify\nlanguage", w=11)
-    f355 = c.box(col[5], 54, "F3.5.5\nCompute\nprose grades", w=11)
-    f356 = c.box(col[3], 29.5, "F3.5.6\nCompute\ndescription grade", w=13.5)
-    f357 = c.box(col[3], 11, "F3.5.7\nCut code into\n10-line windows", w=13.5)
-    f358 = c.box(col[4], 11, "F3.5.8\nCompute linear\ncode score", w=11.5)
-    f359 = c.box(col[5], 29.5, "F3.5.9\nAssemble\nreadability table", w=10.5)
+    f351 = c.box(col[1], 29.5, "F2.2\nSplit front\nmatter from body", w=13)
+    f352 = c.box(col[2], 42, "F2.3\nSeparate code\nfrom prose", w=13)
+    f353 = c.box(col[3], 54, "F3.5.1\nConvert Markdown\nto sentences", w=13.5)
+    f354 = c.box(col[4], 54, "F3.5.2\nIdentify\nlanguage", w=11)
+    f355 = c.box(col[5], 54, "F3.5.3\nCompute\nprose grades", w=11)
+    f356 = c.box(col[3], 29.5, "F3.5.4\nCompute\ndescription grade", w=13.5)
+    f357 = c.box(col[3], 11, "F3.5.5\nCut code into\n10-line windows", w=13.5)
+    f358 = c.box(col[4], 11, "F3.5.6\nCompute linear\ncode score", w=11.5)
+    f359 = c.box(col[5], 29.5, "F3.5.7\nAssemble\nreadability table", w=10.5)
     f4 = c.box(col[6] - 0.5, 29.5, "F4\nJoin\nmetrics", w=8)
     f51 = c.box(col[6] - 0.5, 46, "F5.1\nCompute\nstatistics", w=9)
     f52 = c.box(col[6] - 0.5, 11, "F5.2\nPlot\ndistributions", w=9.5)
@@ -122,13 +122,13 @@ def readability_logical():
     top, mid, bot = 37, 22, 7
     a = c.box(7, mid, "Data loader\n(F1.1)", w=12, h=10, edge=MUTED, fill=DATA)
     b = c.box(25, mid, "Eligibility filter\n(F2.1)", w=13, h=10)
-    d = c.box(44, mid, "Skill parser\n(F3.5.1, F3.5.2)", w=14.5, h=10)
-    e = c.box(44, top, "Markdown normalizer\n(F3.5.3)", w=16, h=8.5)
-    f = c.box(63, top, "Language identifier\n(F3.5.4)", w=15, h=8.5)
-    g = c.box(84, top, "Prose scorer\n(F3.5.5, F3.5.6)", w=14.5, h=9.5)
-    h = c.box(44, bot, "Code windower\n(F3.5.7)", w=14.5, h=8.5)
-    i = c.box(63, bot, "Code scorer\n(F3.5.8)", w=14.5, h=8.5)
-    j = c.box(84, mid, "Results writer\n(F3.5.9)", w=14.5, h=10)
+    d = c.box(44, mid, "Skill parser\n(F2.2, F2.3)", w=14.5, h=10)
+    e = c.box(44, top, "Markdown normalizer\n(F3.5.1)", w=16, h=8.5)
+    f = c.box(63, top, "Language identifier\n(F3.5.2)", w=15, h=8.5)
+    g = c.box(84, top, "Prose scorer\n(F3.5.3, F3.5.4)", w=14.5, h=9.5)
+    h = c.box(44, bot, "Code windower\n(F3.5.5)", w=14.5, h=8.5)
+    i = c.box(63, bot, "Code scorer\n(F3.5.6)", w=14.5, h=8.5)
+    j = c.box(84, mid, "Results writer\n(F3.5.7)", w=14.5, h=10)
     k = c.box(84, bot, "Output joiner (F4),\nanalysis and plots\n(F5.1, F5.2)", w=15.5, h=9.5, edge=MUTED, fill=DATA)
     c.arrow(R(a), L(b), "supplies rows to", ly=7.3, fs=5.7)
     c.arrow(R(b), L(d), "passes skills to", lx=-1.0, ly=7.3, fs=5.7)
@@ -202,10 +202,10 @@ def relationships():
         "STAKEHOLDER NEED · SN-1\nA researcher should be able to tell\nwhich established metrics have\nmeaningful equivalents for skills.",
         "PARENT · SYS-1\nThe pipeline shall compute all five\nmetrics for every eligible skill.",
         "REQUIREMENT · RD-2 (critical)\nWhen prose contains a heading, list\nitem or table row, the normalizer\nshall output it as its own sentence.",
-        "RATIONALE\nFormulas count words per sentence.\nPilot: raw Markdown lifts the median\ngrade from 8.6 to 12.2.\nRejected: score raw text (inflated);\nstrip all lists (drops instructions).\nAssumes: skill bodies use Markdown.",
-        "FUNCTIONS\nF3.5.3 Convert Markdown to sentences:\nR3 (prose Markdown) to R5 (sentence\ntext). Upstream: F3.5.2 supplies R3.",
+        "RATIONALE\nFormulas count words per sentence.\nPilot: raw Markdown lifts the median\ngrade from 9.1 to 12.2.\nRejected: raw text; line-by-line rules\n(split wrapped sentences); dropping lists.\nAssumes: skill bodies use Markdown.",
+        "FUNCTIONS\nF3.5.1 Convert Markdown to sentences:\nR3 (prose Markdown) to R5 (sentence\ntext). Upstream: F2.3 supplies R3.",
         "LOGICAL ELEMENTS\nSkill parser sends prose to the\nMarkdown normalizer, which sends\nsentences to the language identifier.",
-        "PHYSICAL ELEMENTS\nPython regular expressions\nin the normalizer script",
+        "PHYSICAL ELEMENTS\nmarkdown-it parser\nin the normalizer script",
         "VERIFICATION · T05.1 (P2, M3)\n20 hand-marked files. Pass: every\nheading, list item and table row is its\nown sentence; every line has one stream.",
         "DERIVED · RD-2.1\nThe segmenter shall assign each line\nof a skill to exactly one stream.")
     relationship(
@@ -213,8 +213,8 @@ def relationships():
         "STAKEHOLDER NEED · SN-4\nA reader should be able to see the\nlimits of each metric before relying\non it.",
         "PARENT · SYS-2\nThe pipeline shall assign every row\none status with a logged reason.",
         "REQUIREMENT · RD-6 (critical)\nThe module shall not label a grade\nas a quality score.",
-        "RATIONALE\nThe formulas were calibrated on general\ntext, not agent instructions.\nRejected: rating scale with rater\nagreement (work exceeds the decision\nit supports); LLM rater (breaks PF-03).",
-        "FUNCTIONS\nF3.5.9 Assemble readability table:\nR9 to R11 to I4.\nF5.1 Compute statistics: I5 to O1.",
+        "RATIONALE\nPrior work: such scores only weakly track\nhuman judgement on context files (ρ = 0.19).\nRejected: rating scale with rater\nagreement (work exceeds the decision it\nsupports); LLM labels (paid; $0 budget).",
+        "FUNCTIONS\nF3.5.7 Assemble readability table:\nR9 to R11 to I4.\nF5.1 Compute statistics: I5 to O1.",
         "LOGICAL ELEMENTS\nResults writer labels each score, and\nthe analysis stage carries that label\ninto tables and figures.",
         "PHYSICAL ELEMENTS\nLabel column in the\nParquet readability table",
         "VERIFICATION · T05.6 (P2, M3, M4)\nFault injection on controlled inputs.\nPass: no grade is labelled\na quality score.",

@@ -1,8 +1,44 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element: F1 ingests the GitSkills tables, F2 prepares records and filters out files that are not genuine skills, F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
-We query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}, because live GitHub mining changes between runs and loading the 44~GB database into memory exceeds the limit in PF-02. Each stage writes Parquet, so a failed stage restarts without repeating earlier ones. The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
+The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element. F1 ingests the GitSkills tables, which are distributed as one SQLite database with a Parquet copy of each table: \texttt{artifacts}, \texttt{artifact\_siblings}, \texttt{repos}, and \texttt{mining\_runs}. F2, one pre-processing step shared by every metric, keeps one row per distinct skill (\textit{dedup\_primary} = 1, a \textit{filename} of SKILL.md, valid front matter, not a symlink, and a non-empty body) and splits its \textit{content} into front matter, prose, and code. F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
+We query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}, because live GitHub mining changes between runs and loading the 44~GB database into memory exceeds the limit in PF-02. Each stage writes Parquet, so a failed stage restarts without repeating earlier ones. The only input from outside the dataset is a small sample of cloned GitHub repositories used for token churn.
+
+\medskip
+
+\needspace{5\baselineskip}
+\noindent\textbf{Size and Churn Calculation Modules.}
+
+Figure~\ref{fig:size-churn} shows the Size and Churn modules in one diagram to save space, since both start from the same pre-processing step.
+The tables on the left list every field the two modules read, all keyed by \textit{file\_sha} except bundle files, which join to their skill on \textit{repo\_full\_name} and \textit{path}.
+Clone Coverage is faded because Churn reuses its near-clone families instead of building its own.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.9\linewidth]{figures/size-churn-function}
+\caption{Size and Churn modules, showing the fields read from GitSkills, the shared pre-processing, and the outputs of each calculation.}
+\label{fig:size-churn}
+\end{figure}
+
+\needspace{5\baselineskip}
+\noindent\textbf{Size Calculation Module.}
+
+The Size module counts the tokens in each of a skill's three tiers: the description, the body (prose and code), and the bundle, which only counts the text files whose content GitSkills stored.
+Skills with \textit{composition\_truncated} = 1 are flagged, since their bundle listing is incomplete.
+Lines and words are also counted for the body, along with lines and tokens for each bundled script, so skills can be compared directly with ordinary code.
+The output is one row of size columns per \textit{file\_sha}, plus a separate file for the bundled scripts.
+
+\medskip
+
+\needspace{5\baselineskip}
+\noindent\textbf{Churn Calculation Module.}
+
+The Churn module splits into three calculations.
+\textit{Activity churn} uses the commit fields of every skill with history (\textit{history\_fetched} = 1) to find how many times it was edited (\textit{commit\_count} minus 1), its edits per month, how long it was actively edited, and how long it has sat untouched up to the snapshot date (\textit{finished\_at} in \textit{mining\_runs}).
+It also flags first or last commits that were AI co-authored or made by a bot, and whether the author changed between them.
+\textit{Token churn} follows a sample of edited skills, stratified by \textit{location\_class}, through their cloned histories, renames included, and counts the tokens added and removed between each pair of consecutive versions.
+\textit{Cross-copy churn} orders each near-clone family by \textit{first\_commit\_at}, or by the repository's \textit{created\_at} when a skill has no history, then compares each skill with its most similar earlier member and counts the tokens added and removed.
+Activity and token churn go into the churn columns, while each link from a parent to its child goes into a separate lineage file, along with its similarity, its token counts, and which date was used to decide its direction.
 
 \medskip
 
@@ -24,16 +60,15 @@ Pairs with different file hashes and Jaccard similarity of at least 80\% will be
 
 \noindent\textbf{Readability Calculation Module.}
 
-Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a logical element~\cite[Sec.~4.3]{nasa2016handbook}.
-A skill mixes prose with code, so F3.5.1 and F3.5.2 split it into description, prose, and code; one whole-file score would hide what each part contributes. F1.1 takes one representative row per distinct content, since identical files score identically.
-Readability formulas count words per sentence, so F3.5.3 emits each heading, list item, and table row as its own sentence. Our pilot on the 13,000-skill sample shows the need: otherwise a bullet list counts as one long sentence and the median grade rises from 8.6 to 12.2.
-English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables, which gives an independent check on syllable counting in technical text; the two agreed closely in the pilot ($\rho = 0.92$). We rejected Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog}, which also rely on syllables and track Flesch--Kincaid closely, and Dale--Chall~\cite{chall1995}, which counts technical terms as unfamiliar. Neither kept formula was calibrated on agent instructions, so we report grades as reading-level estimates, not as measures of quality.
-Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows and scored with the linear output of Posnett's model~\cite{posnett2011simpler}, because its sigmoid output falls below 0.01 for 90\% of pilot skills. Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 reports medians, interquartile ranges, and the effect size Cliff's $\delta$~\cite{cliff1993dominance}, with distribution plots.
+Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a logical element~\cite[Sec.~4.3]{nasa2016handbook}. Pre-processing (F2) supplies the description, prose, and code of each distinct skill, which we score separately so that one part cannot hide another.
+Readability formulas count words per sentence, so F2.2 parses the Markdown rather than scoring raw text. It joins hard-wrapped lines, which occur in 37\% of skills in our pilot on the 13,000-skill sample; removes inline code, which formulas misread as short words~\cite{chatlatanagulchai2026agent}; and emits each heading, list item, and table row as one sentence. Scoring raw text would instead raise the median grade from 9.1 to 12.2.
+English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables, which independently checks syllable counting in technical text; the two agreed closely in the pilot ($\rho = 0.90$). We rejected Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog}, which also rely on syllables and track Flesch--Kincaid closely, and Dale--Chall~\cite{chall1995}, which counts technical terms as unfamiliar. The closest prior work scored agent context files with Flesch Reading Ease and found only a weak link to human judgement ($\rho = 0.19$)~\cite{chatlatanagulchai2026agent}, so we report grades as reading-level estimates, not as measures of quality.
+Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows, within the 4-to-11-line snippets behind Posnett's model~\cite{posnett2011simpler}, and scored with its linear output, because its sigmoid output falls below 0.01 for 91\% of pilot skills. Its authors caution against applying it blindly, and it tracked developers weakly on AI-generated Java (MCC $= -0.036$)~\cite{sergeyuk2024reassessing}, so this score is also an estimate. Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 reports medians, interquartile ranges, and the effect size Cliff's $\delta$~\cite{cliff1993dominance}, with distribution plots.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/readability-functional.pdf}
-\caption{Functional decomposition of readability, from ingestion (F1.1) to outputs (O1, O2). Each box performs one transformation; arrows carry only its inputs and outputs. I-labels are pipeline interfaces and R-labels are internal to the module (Appendix~\ref{app:interfaces}).}
+\caption{Functional decomposition of readability, from ingestion (F1.1) through shared pre-processing (F2) to outputs (O1, O2). Each box performs one transformation; arrows carry only its inputs and outputs. I-labels are pipeline interfaces and R-labels are internal to the module (Appendix~\ref{app:interfaces}).}
 \label{fig:readability-functional}
 \end{figure}
 
@@ -47,7 +82,7 @@ Code blocks and bundled scripts, read as text and never run, are cut into equal 
 
 \CourseSubsection{Requirements Specifications}
 
-Table~\ref{tab:needs} states what each stakeholder needs, and Table~\ref{tab:proposal-specs} turns those needs into system requirements. Each metric module refines SYS-1, and Appendix~\ref{app:requirements} shows the hierarchy. We rank a requirement as critical when a metric result cannot be trusted without it. The requirements assume a fixed July 2026 snapshot, one team workstation whose specification is recorded with T08, skill bodies written in Markdown, and English prose for readability scoring.
+Table~\ref{tab:needs} states what each stakeholder needs, and Table~\ref{tab:proposal-specs} turns those needs into system requirements. Table~\ref{tab:age-clone-reqs} and each metric's own table refine SYS-1, and Appendix~\ref{app:requirements} shows the hierarchy. We rank a requirement as critical when a metric result cannot be trusted without it. The requirements assume a fixed July 2026 snapshot, one team workstation whose specification is recorded with T08, skill bodies written in Markdown, and English prose for readability scoring.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
@@ -97,7 +132,7 @@ SYS-3 & For each metric compared with source code, the pipeline shall report a s
 \addlinespace[3pt]
 SYS-6 & The pipeline shall not execute skill text or bundled files. & Safety; critical & SN-5 & T10\\
 \addlinespace[3pt]
-IF-02 & Each stage shall pass every retained occurrence to the next stage with 0 rows lost (I3, I4). & Interface; critical & SN-3 & T06\\
+IF-02 & Each stage shall pass every retained record to the next stage, keyed by \texttt{file\_sha} (bundle files by repository and path), with 0 rows lost (I3, I4). & Interface; critical & SN-3 & T06\\
 \addlinespace[3pt]
 IF-03 & The output stage shall write one row per distinct skill to the metrics file, with 0 duplicates (I5). & Interface; major & SN-1 & T06\\
 \addlinespace[3pt]
@@ -142,7 +177,7 @@ RD-S1 & The module may count vague terms per 100 words~\cite{femmer2017smells}. 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
 \begin{longtable}{@{}L{0.10\linewidth} L{\dimexpr0.4700000\linewidth-6.0000000\tabcolsep\relax} L{0.22\linewidth} L{0.21\linewidth}@{}}
-\caption{Age and clone coverage requirements (parent SYS-1).}\label{tab:age-clone-reqs}\\
+\caption{Metric module requirements (parent SYS-1).}\label{tab:age-clone-reqs}\\
 \rowcolor{MidGray}
 \TableHeader{ID} & \TableHeader{Requirement} & \TableHeader{Target} & \TableHeader{Tolerance} \\
 \midrule
@@ -162,10 +197,36 @@ CL-01 & The Clone Coverage module shall identify exact clone groups from matchin
 CL-02 & The Clone Coverage module shall find near-clone candidate pairs using MinHash and LSH, and link pairs whose three-token shingle Jaccard similarity is at least 0.80. & Threshold $\geq$ 0.80 for linked pairs & 0 incorrect threshold decisions on evaluated pairs \\
 \addlinespace[3pt]
 CL-03 & The Clone Coverage module shall form connected clone groups and report exact and expanded coverage separately, with excluded-record counts. & Both percentages and exclusion counts produced & 0 errors on reference examples \\
+\addlinespace[3pt]
+SZ-01 & For every included skill, the Size module shall report the token count of its description, body, and bundle & 3 counts per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+SZ-02 & For every included skill with \textit{composition\_truncated} = 1, the Size module shall flag its bundle count as unreliable & 100\% of truncated skills flagged & 0 unflagged \\
+\addlinespace[3pt]
+SZ-03 & For every included skill, the Size module shall report the non-blank line count and word count of its body & 2 counts per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+SZ-04 & For every bundled script with stored content, the Size module shall report its non-blank line count and token count & 2 counts per script & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-01 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall report its edits, edits per month, active span, and dormancy & 4 values per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-02 & For every included skill with \textit{history\_fetched} = 1, the Churn module shall flag whether its first or last commit was AI co-authored or made by a bot & 1 flag per skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-03 & For every sampled skill whose repository can be cloned, the Churn module shall report the tokens added and removed between each pair of consecutive versions & Every cloned sampled skill & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+CH-04 & For every near-clone family, the Churn module shall link each member after the earliest to its most similar earlier member, leaving the link undirected when the dates cannot tell which came first & 1 link per member after the earliest & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+IF-04 & Clone Coverage passes a \textit{family\_id} for every included skill in a near-clone family, keyed by \textit{file\_sha} & 1 ID per member & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+IF-05 & Lineage file holds one row per link with \textit{parent\_sha}, \textit{child\_sha}, \textit{similarity}, \textit{tokens\_added}, \textit{tokens\_removed}, and \textit{direction\_basis} & 6 fields per link & 0 missing$^{*}$ \\
+\addlinespace[3pt]
+PF-07 & Token, line, and word counts on the 20 skills chosen for T01 match a standalone reference script & Exact match & 0 differences \\
+\addlinespace[3pt]
+PF-08 & Tokens added and removed on the version and copy pairs chosen for T02 match git's word diff of the same pairs & Within 2 tokens per pair & 0 pairs outside \\
 \end{longtable}
+\vspace{-6pt}
+\noindent{\small $^{*}$Depending on how clean the data is, a few outlier records may lack the usual fields. These are flagged and reported rather than counted as missing.}
 \end{singlespace}
 
-Figure~\ref{fig:critical-rd2} gives the context for RD-2. RD-10 supports the wording of our results: the extremes show whether a grade separates clearly harder text from clearly easier text, at a cost of about 80 minutes of reading (Appendix~\ref{app:requirements}).
+Figure~\ref{fig:critical-rd2} gives the context for RD-2. RD-10 follows the closest prior study, which inspected files from each score band to learn what the scores capture~\cite{chatlatanagulchai2026agent}; reading the 40 skills takes about 75 minutes (Appendix~\ref{app:requirements}).
 
 \begin{figure}[htbp]
 \centering

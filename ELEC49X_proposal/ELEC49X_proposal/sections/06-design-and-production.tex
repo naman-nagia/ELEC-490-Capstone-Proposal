@@ -9,8 +9,8 @@ Each metric follows four rough stages: it is prototyped on the official 13,000-s
 \noindent\textbf{Size.}
 Size is classically measured in lines, but that doesn't translate well to skills.
 A skill mixes plain-language instructions with code blocks, and a line of prose and a line of code carry very different amounts of information; in our pilot, about 12\% of a typical skill's body was code.
-Instead, we measure size in tokens, the units an agent actually reads text in and the units its context window is limited by.
-We split that count across the three parts of a skill, since an agent loads each at a different time: the \textit{description}, read for every installed skill to decide which one to use; the \textit{body}, loaded only once a skill is chosen; and the \textit{bundle}, the scripts and reference files the body points to.
+Instead, we measure size in tokens, the units an agent actually reads text in and the units its context window is limited by, counted with Anthropic's tokenizer.
+We split that count across the three parts of a skill, since an agent loads each at a different time: the \textit{description}, read for every installed skill to decide which one to use; the \textit{body}, loaded only once a skill is chosen; and the \textit{bundle}, the scripts and reference files stored next to the skill, which the body points to when it needs them.
 Measuring each part separately shows not just how big a skill is, but where that size costs the agent.
 Lines and words are still recorded alongside tokens, so skills can be compared directly with the code bundled next to them.\par
 
@@ -19,8 +19,8 @@ Classically, churn is the number of lines added plus lines removed between commi
 Since lines don't fit skills well, churn needs adapting too, and the data adds a second complication: GitSkills records how often and when a skill was committed, but not what changed, and about two-thirds of skills in our pilot were never edited after being added.
 What skills tend to do instead is get copied and then modified for a new project, so we split churn into three types.
 \textit{Activity churn} uses the recorded commit counts and dates to measure how often, and for how long, a skill is maintained.
-\textit{Cross-copy churn} links each skill to the copy it most likely came from using text similarity (MinHash), with the cut-off for ``same skill'' checked by hand, and counts the tokens added and removed along the way; this is where we expect the most useful results, since it captures how popular templates get adapted for uses like design or security.
-\textit{Within-file churn} is classical churn computed from the full git history of a sample of edited skills, and confirms that the other two measures reflect real change.\par
+\textit{Cross-copy churn} takes the near-clone families found by Clone Coverage (MinHash), links each skill to the most similar member that appeared before it, and counts the tokens added and removed along the way. Which copy came first is decided by the first commit date, or by the repository's creation date when a skill has no history, and a sample of the links is checked by hand (PF-04). This is where we expect the most useful results, since it captures how popular templates get adapted for uses like design or security.
+\textit{Token churn} is classical churn counted in tokens instead of lines, computed from the full git history of a sample of edited skills, and confirms that the other two measures reflect real change.\par
 
 \noindent\textbf{Age.}
 Age measures how long a skill has existed within its repository. The GitSkills \texttt{artifacts} table provides the \texttt{first\_commit\_at} and \texttt{last\_commit\_at} timestamps, of which \texttt{first\_commit\_at} will be used to calculate age. For each eligible skill, the team will subtract its first recorded commit date from a fixed dataset collection date and express the elapsed time in days. Using the same collection date for every skill ensures that the results are reproducible across repeated runs.
@@ -35,7 +35,7 @@ Near-clones will also be detected using the actual skill text in \texttt{content
 Exact clone groups and qualifying near-clone links will be combined into connected groups. This permits chains of related skills even when not every pair in the group individually exceeds 80\% similarity, so the grouping rule will be reported explicitly. Near-clone relationships will be mapped from representative contents back to all eligible skill occurrences using \texttt{file\_sha}. The team will report exact clone coverage and expanded coverage including near-clones separately, with the latter calculated over occurrences for which usable similarity data is available. Missing hashes, unavailable content, and exclusions will be reported so that the coverage percentages can be interpreted correctly. The methods will be prototyped on the 13,000-skill sample before scaling to the full dataset.\par
 
 \noindent\textbf{Readability.}
-Section~\ref{sec:functional-description} describes the module, which we prototyped on the 13,000-skill sample: median skill bodies read at grade 8.6, descriptions at grade 12.7, and about 21\% of eligible skills are not in English (Appendix~\ref{app:readability-pilot}). The next iteration replaces the pilot's simple English check with fastText~\cite{joulin2017bag}, followed by the hand review (T05.5).\par
+Section~\ref{sec:functional-description} describes the module, which we prototyped on the 13,000-skill sample: median skill bodies read at grade 9.1, descriptions at grade 12.7, and about 19\% of eligible skills are not in English (Appendix~\ref{app:readability-pilot}). The next iteration replaces the pilot's simple English check with fastText~\cite{joulin2017bag}, followed by the hand review (T05.5).\par
 
 \CourseSubsection{Milestones and Division of Labor}
 
@@ -114,7 +114,7 @@ M7 will assess findings, validation evidence, limitations, and writing readiness
 
 \CourseSubsection{Further Exploration and Contingencies}
 
-Following the initial analysis in M6, the research review in M10 will select follow-up investigations for M11. Candidates include differences in skill revision activity across repository domains, instruction structure, and reuse patterns. Selection will depend on data availability, measurement validity, and remaining time.
+Following the initial analysis in M6, the research review in M10 will select follow-up investigations for M11. Candidates include differences in skill revision activity across repository domains, instruction structure, reuse patterns, and an LLM-assisted taxonomy of skill purposes~\cite{wan2024tnt}. Selection will depend on data availability, measurement validity, and remaining time.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}

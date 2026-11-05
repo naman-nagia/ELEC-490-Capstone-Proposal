@@ -31,11 +31,11 @@ Large samples make almost any difference statistically significant, so a finding
 \endfoot
 
 T01 & Size
-& Compare calculated counts with independently established counts for controlled skill examples.\\
+& Compare counts for 20 skills chosen from the sample, covering code blocks, binary bundle files, and truncated bundles, with a standalone reference script (SZ-01 to SZ-04, IF-02, PF-07).\\
 \addlinespace[3pt]
 
 T02 & Churn
-& Compare measured changes with known changes between controlled versions or copies, distinguishing the implemented churn measures.\\
+& Compare activity values, token changes, and family links for 20 chosen skills, covering commit history, cloned versions, and one near-clone family, with hand-calculated values and git's word diff (CH-01 to CH-04, IF-04, IF-05, PF-08).\\
 \addlinespace[3pt]
 
 T03 & Age
@@ -43,7 +43,7 @@ T03 & Age
 \addlinespace[3pt]
 
 T04 & Clone coverage
-& Compare detected clone groups and reported coverage with a controlled collection whose duplication relationships are known.\\
+& Test CL-01, CL-02, and CL-03 using sample skills with exact and near-clones. The test passes if matching hashes are grouped correctly, skills with at least 80\% Jaccard similarity are identified as near-clones, and the calculated clone coverage matches the expected results.\\
 \addlinespace[3pt]
 
 T05 & Readability
