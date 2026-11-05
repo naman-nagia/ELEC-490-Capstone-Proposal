@@ -35,14 +35,7 @@ Near-clones will also be detected using the actual skill text in \texttt{content
 Exact clone groups and qualifying near-clone links will be combined into connected groups. This permits chains of related skills even when not every pair in the group individually exceeds 80\% similarity, so the grouping rule will be reported explicitly. Near-clone relationships will be mapped from representative contents back to all eligible skill occurrences using \texttt{file\_sha}. The team will report exact clone coverage and expanded coverage including near-clones separately, with the latter calculated over occurrences for which usable similarity data is available. Missing hashes, unavailable content, and exclusions will be reported so that the coverage percentages can be interpreted correctly. The methods will be prototyped on the 13,000-skill sample before scaling to the full dataset.\par
 
 \noindent\textbf{Readability.}
-Readability is classically measured in two separate ways. Formulas such as the Flesch--Kincaid grade level score English prose by sentence and word length~\cite{flesch1948,kincaid1975}, while code readability models score code from features such as line count and token entropy~\cite{buse2010readability,posnett2011simpler}.
-Neither fits a skill on its own, so we split each skill into the same three parts used for size and score each part with the instrument designed for it.
-The body's prose and the description are scored with the Flesch--Kincaid grade, with three related formulas as a cross-check.
-The body's code blocks are scored with Posnett's model, which is also applied, in equal-length snippets, to the scripts bundled next to the skill, so skill code and ordinary code are compared on the same scale.
-Before scoring, the Markdown has to be turned into real sentences. Otherwise each bullet list counts as one long sentence, and in our pilot on the 13,000-skill sample this raised the median skill's grade by 3.4 levels (Appendix~\ref{app:readability-pilot}).
-The formulas only work for English, so non-English skills (about 21\% of the pilot) are counted but not scored.
-In the pilot, the median skill body read at grade 8.6, while descriptions read at grade 12.7.
-To validate, two team members will independently rate 100 skills, stratified by grade, on a five-point scale. The formula is accepted if the raters agree with each other (PF-06) and its scores track their average rating (PF-05). If it fails, readability will be reported only as a measure of text complexity, not of quality.\par
+Section~\ref{sec:functional-description} describes the module, which we prototyped on the 13,000-skill sample: median skill bodies read at grade 9.1, descriptions at grade 12.7, and about 19\% of eligible skills are not in English (Appendix~\ref{app:readability-pilot}). The next iteration replaces the pilot's simple English check with fastText~\cite{joulin2017bag}, followed by the hand review (T05.5).\par
 
 \CourseSubsection{Milestones and Division of Labor}
 
@@ -121,7 +114,7 @@ M7 will assess findings, validation evidence, limitations, and writing readiness
 
 \CourseSubsection{Further Exploration and Contingencies}
 
-Following the initial analysis in M6, the research review in M10 will select follow-up investigations for M11. Candidates include differences in skill revision activity across repository domains, instruction structure, and reuse patterns. Selection will depend on data availability, measurement validity, and remaining time.
+Following the initial analysis in M6, the research review in M10 will select follow-up investigations for M11. Candidates include differences in skill revision activity across repository domains, instruction structure, reuse patterns, and an LLM-assisted taxonomy of skill purposes~\cite{wan2024tnt}. Selection will depend on data availability, measurement validity, and remaining time.
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
@@ -162,5 +155,3 @@ R4 & \textbf{Schedule pressure:} unresolved defects or analysis delays threaten 
 \end{singlespace}
 
 Changes affecting mandatory requirements will be reviewed with the supervisor and reflected in the requirements, tests, and schedule. Optional investigations may be deferred, but unsuccessful tests or unsupported findings will not be presented as completed validation.
-
-\clearpage
