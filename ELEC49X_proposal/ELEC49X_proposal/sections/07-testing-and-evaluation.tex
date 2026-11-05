@@ -2,9 +2,9 @@
 
 Verification will check metric calculations against independently established reference results and assess data handling, pipeline integration, reproducibility, and performance. Validation will assess whether the measurements support their intended interpretation and the research questions. Each metric owner will document the test inputs, procedure, expected results, acceptance criteria, and associated requirement and prototype IDs.
 
-Figure~\ref{fig:test-setup} shows the test environment: a pinned Python environment on the reference workstation, with inputs growing from controlled fixtures to the sample and then the full snapshot. Verification checks technical requirements. Validation checks stakeholder needs: SN-1 and SN-4 through hand-checked evidence of what each metric means (T02, T04, T05.5), SN-2 through the code comparison (T09), and SN-3 through a repeat run by a second team member (T07).
+Figure~\ref{fig:test-setup} shows the test environment: a pinned Python environment on one team workstation, with inputs growing from controlled fixtures to the sample and then the full snapshot. Stakeholder needs are validated through hand-checked evidence of what each metric means for SN-1 and SN-4 (T02, T04, T05.5), the code comparison for SN-2 (T09), and a repeat run by a second team member for SN-3 (T07).
 
-A finding counts as supported only when the metric's validation supports that interpretation, the 95\% confidence interval of Cliff's $\delta$ lies outside the negligible band $|\delta| < 0.147$~\cite{romano2006cliff}, and the direction agrees between the sample and the full dataset. Anything else is reported as inconclusive.
+Large samples make almost any difference statistically significant, so a finding counts as supported only when the metric's validation supports that interpretation, the 95\% confidence interval of Cliff's $\delta$ lies outside the negligible band $|\delta| < 0.147$~\cite{romano2006cliff}, and the direction agrees between the sample and the full dataset. Anything else is reported as inconclusive.
 
 \begin{figure}[htbp]
 \centering
@@ -70,9 +70,9 @@ Table~\ref{tab:readability-tests} details the critical tests of T05, which belon
 \endhead
 \bottomrule
 \endfoot
-T05.5 & RD-10; M6 & Validation. A team member reads the 20 highest-graded and 20 lowest-graded skills and records whether each grade fits the text. & All 40 are reviewed and recorded. If fewer than 30 fit, we state that the grade does not separate difficulty for skills.\\
+T05.5 & RD-10; M6 & Validation. A team member reads the 40 exported skills and records whether each grade fits the text. & All 40 are reviewed and recorded. If fewer than 30 fit, we state that the grade does not separate difficulty for skills.\\
 \addlinespace[3pt]
-T05.6 & RD-4, RD-5, RD-6, RD-7; M3, M4 & Fault injection with non-English text, under 30 words, empty body, malformed YAML, and an unclosed code fence. & Each case gets the expected status and null grade; no crash; one row per \texttt{file\_sha}; output labels say reading-level estimate, not quality.\\
+T05.6 & RD-4, RD-5, RD-6, RD-7; M3, M4 & Fault injection with non-English text, under 30 words, empty body, malformed YAML, and an unclosed code fence. & Each case gets the expected status and null grade; no crash; one row per \texttt{file\_sha}; no grade is labelled a quality score.\\
 \end{longtable}
 \end{singlespace}
 

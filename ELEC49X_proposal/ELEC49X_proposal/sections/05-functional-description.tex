@@ -1,7 +1,7 @@
 \CourseSection{Functional Description}\label{sec:functional-description}
 \CourseSubsection{System overview}
 
-The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element~\cite[Sec.~4.3]{nasa2016handbook}: F1 ingests the GitSkills tables, F2 prepares records and filters out files that are not genuine skills, F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
+The pipeline of Figure~\ref{fig:system} decomposes into five functions, each allocated to one software element: F1 ingests the GitSkills tables, F2 prepares records and filters out files that are not genuine skills, F3 calculates each metric in a separate module (F3.1 size, F3.2 churn, F3.3 age, F3.4 clone coverage, F3.5 readability), F4 joins the results into one metrics file, and F5 produces statistics and plots. Appendix~\ref{app:interfaces} gives the interfaces (I1 to I7), tools, and design decisions.
 We query a fixed snapshot in batches with DuckDB~\cite{raasveldt2019duckdb}, because live GitHub mining changes between runs and loading the 44~GB database into memory exceeds the limit in PF-02. Each stage writes Parquet, so a failed stage restarts without repeating earlier ones. The only input from outside the dataset is a small sample of cloned GitHub repositories used to validate churn.
 
 \medskip
@@ -24,11 +24,11 @@ Pairs with different file hashes and Jaccard similarity of at least 80\% will be
 
 \noindent\textbf{Readability Calculation Module.}
 
-Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a software element.
-F1.1 takes one representative row per distinct content, since identical files score identically, and F2.1 keeps verified files named exactly \texttt{SKILL.md} with valid front matter. F3.5.1 and F3.5.2 split each skill into description, prose, and code, because one whole-file score would mix prose with code.
-Readability formulas count words per sentence, so F3.5.3 emits each heading, list item, and table row as its own sentence; otherwise a bullet list counts as one long sentence and the median grade rises from 8.6 to 12.2. English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is free, repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables: it is an independent check on syllable counting in technical text, and the two agreed closely in the pilot ($\rho = 0.92$). Both were calibrated on general text rather than agent instructions, so we report their grades as reading-level estimates, not as measures of quality.
-Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows and scored with the linear output of Posnett's model~\cite{posnett2011simpler}, because its sigmoid output falls below 0.01 for 90\% of pilot skills.
-Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 outputs medians, interquartile ranges, Cliff's $\delta$~\cite{cliff1993dominance}, and distribution plots. Appendix~\ref{app:interfaces} records the alternatives we rejected.
+Figure~\ref{fig:readability-functional} decomposes readability from ingestion to outputs, and Figure~\ref{fig:readability-logical} allocates each function to a logical element~\cite[Sec.~4.3]{nasa2016handbook}.
+A skill mixes prose with code, so F3.5.1 and F3.5.2 split it into description, prose, and code; one whole-file score would hide what each part contributes. F1.1 takes one representative row per distinct content, since identical files score identically.
+Readability formulas count words per sentence, so F3.5.3 emits each heading, list item, and table row as its own sentence. Our pilot on the 13,000-skill sample shows the need: otherwise a bullet list counts as one long sentence and the median grade rises from 8.6 to 12.2.
+English prose receives the Flesch--Kincaid grade~\cite{kincaid1975}, which needs only sentence length and syllables per word, so it is repeatable, requires no training data, and expresses difficulty as a school grade. Coleman--Liau~\cite{coleman1975} is the cross-check because it counts letters instead of syllables, which gives an independent check on syllable counting in technical text; the two agreed closely in the pilot ($\rho = 0.92$). We rejected Gunning Fog~\cite{gunning1952} and SMOG~\cite{mclaughlin1969smog}, which also rely on syllables and track Flesch--Kincaid closely, and Dale--Chall~\cite{chall1995}, which counts technical terms as unfamiliar. Neither kept formula was calibrated on agent instructions, so we report grades as reading-level estimates, not as measures of quality.
+Code blocks and bundled scripts, read as text and never run, are cut into equal 10-line windows and scored with the linear output of Posnett's model~\cite{posnett2011simpler}, because its sigmoid output falls below 0.01 for 90\% of pilot skills. Prose and code use different scales, so we compare with source code only through the code model, using the scripts bundled with about 11\% of skills. F5 reports medians, interquartile ranges, and the effect size Cliff's $\delta$~\cite{cliff1993dominance}, with distribution plots.
 
 \begin{figure}[htbp]
 \centering
@@ -40,14 +40,40 @@ Prose and code use different scales, so we compare with source code only through
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/readability-logical.pdf}
-\caption{Logical decomposition of readability. Arrows state the action between elements; each box lists its implementation and the functions of Figure~\ref{fig:readability-functional} allocated to it.}
+\caption{Logical decomposition of readability. Arrows state the action between elements; each box lists the functions of Figure~\ref{fig:readability-functional} allocated to it.}
 \label{fig:readability-logical}
 \end{figure}
 
 
 \CourseSubsection{Requirements Specifications}
 
-Requirements flow from stakeholder needs through system requirements to metric modules~\cite[Sec.~4.2]{nasa2016handbook}. The stakeholder needs are: \textbf{SN-1}, a researcher should be able to tell which established metrics have meaningful equivalents for skills; \textbf{SN-2}, a researcher should be able to compare skill metric distributions with source code; \textbf{SN-3}, a reviewer should be able to reproduce every reported value; \textbf{SN-4}, a reader should be able to see each metric's limits before relying on it; \textbf{SN-5}, the team should be able to analyze untrusted repository content safely. Table~\ref{tab:proposal-specs} lists system requirements, each metric module refines SYS-1, and Appendix~\ref{app:requirements} shows the hierarchy. Performance targets are measured on one team workstation, whose specification is recorded with T08.
+Table~\ref{tab:needs} states what each stakeholder needs, and Table~\ref{tab:proposal-specs} turns those needs into system requirements. Each metric module refines SYS-1, and Appendix~\ref{app:requirements} shows the hierarchy. We rank a requirement as critical when a metric result cannot be trusted without it. The requirements assume a fixed July 2026 snapshot, one team workstation whose specification is recorded with T08, skill bodies written in Markdown, and English prose for readability scoring.
+
+\begin{singlespace}
+\setlength{\LTcapwidth}{\linewidth}
+\begin{longtable}{@{}L{0.07\linewidth} L{0.16\linewidth} L{\dimexpr0.52\linewidth-6\tabcolsep\relax} L{0.25\linewidth}@{}}
+\caption{Stakeholder needs and associated requirements.}\label{tab:needs}\\
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Stakeholder} & \TableHeader{Need} & \TableHeader{Requirements}\\
+\midrule
+\endfirsthead
+\rowcolor{MidGray}
+\TableHeader{ID} & \TableHeader{Stakeholder} & \TableHeader{Need} & \TableHeader{Requirements}\\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+SN-1 & Supervisor & A researcher should be able to tell which established metrics have meaningful equivalents for skills. & SYS-1, IF-03, PF-04\\
+\addlinespace[3pt]
+SN-2 & Researchers & A researcher should be able to compare skill metric distributions with source code. & SYS-3\\
+\addlinespace[3pt]
+SN-3 & Reviewers & A reviewer should be able to reproduce every reported value. & SYS-5, IF-01, IF-02, PF-01 to PF-03\\
+\addlinespace[3pt]
+SN-4 & Skill authors & A reader should be able to see each metric's limits before relying on it. & SYS-2\\
+\addlinespace[3pt]
+SN-5 & Project team & The team should be able to analyze untrusted repository content safely. & SYS-6\\
+\end{longtable}
+\end{singlespace}
 
 \begin{singlespace}
 \setlength{\LTcapwidth}{\linewidth}
@@ -63,23 +89,23 @@ Requirements flow from stakeholder needs through system requirements to metric m
 \endhead
 \bottomrule
 \endfoot
-SYS-1 & The pipeline shall compute size, churn, age, clone coverage, and readability for every skill eligible for that metric. & Functional; critical & SN-1 & T01--T05\\
+SYS-1 & The pipeline shall compute each of the five metrics for every skill eligible for that metric. & Functional; critical & SN-1 & T01--T05\\
 \addlinespace[3pt]
 SYS-2 & The pipeline shall assign every \texttt{artifacts} row one status (retained, excluded, or flagged) with a logged reason. & Functional; critical & SN-4 & T06\\
 \addlinespace[3pt]
-SYS-3 & The pipeline shall report each compared metric's median, interquartile range, and Cliff's $\delta$ with a 95\% confidence interval. & Functional; major & SN-2 & T09\\
+SYS-3 & For each metric compared with source code, the pipeline shall report a summary table (median, interquartile range, and Cliff's $\delta$ with a 95\% confidence interval). & Functional; major & SN-2 & T09\\
 \addlinespace[3pt]
 SYS-6 & The pipeline shall not execute skill text or bundled files. & Safety; critical & SN-5 & T10\\
 \addlinespace[3pt]
-IF-02 & Each stage shall pass every retained occurrence, keyed by repository and path and linked by \texttt{file\_sha}, with 0 rows lost (I3, I4). & Interface; critical & SN-3 & T06\\
+IF-02 & Each stage shall pass every retained occurrence to the next stage with 0 rows lost (I3, I4). & Interface; critical & SN-3 & T06\\
 \addlinespace[3pt]
-IF-03 & The output stage shall write one row per distinct skill, in Parquet and CSV, with 0 duplicates (I5). & Interface; major & SN-1 & T06\\
+IF-03 & The output stage shall write one row per distinct skill to the metrics file, with 0 duplicates (I5). & Interface; major & SN-1 & T06\\
 \addlinespace[3pt]
 PF-01 & The pipeline shall complete a full-dataset run within 24~h (+12~h tolerance). & Performance; major & SN-3 & T08\\
 \addlinespace[3pt]
 PF-02 & The pipeline shall keep peak memory within 16~GB (+4~GB tolerance). & Performance; major & SN-3 & T08\\
 \addlinespace[3pt]
-PF-03 & A re-run with the same snapshot, configuration, and software shall reproduce identical metric tables. & Reliability; critical & SN-3 & T07\\
+PF-03 & When re-run with the same snapshot, configuration, and software, the pipeline shall produce identical metric tables. & Reliability; critical & SN-3 & T07\\
 \addlinespace[3pt]
 PF-04 & The lineage linker shall reach a precision of at least 0.90 ($-$0.05 tolerance) on the hand-labelled sample. & Accuracy; critical & SN-1 & T02\\
 \end{longtable}
@@ -103,13 +129,13 @@ RD-1 & The module shall score each part of an eligible English skill with its as
 \addlinespace[3pt]
 RD-2 & When prose contains a heading, list item, or table row, the normalizer shall output it as its own sentence. & Functional; critical & SYS-1 & T05.1\\
 \addlinespace[3pt]
-RD-10 & The team shall hand-review the 20 highest-graded and 20 lowest-graded skills and record whether each grade fits the text. & Validation; critical & RD-6 & T05.5\\
+RD-10 & The module shall export the 40 extreme-graded English skills (20 highest, 20 lowest) for hand review. & Validation; major & RD-6 & T05.5\\
 \addlinespace[3pt]
 RD-4 & The module shall not assign a prose grade to a skill labelled non-English. & Fault; critical & SYS-2 & T05.6\\
 \addlinespace[3pt]
-RD-6 & The module shall not present a grade as a measure of skill quality. & Fault; critical & SYS-2 & T05.6\\
+RD-6 & The module shall not label a grade as a quality score. & Fault; critical & SYS-2 & T05.6\\
 \addlinespace[3pt]
-RD-S1 & The module may count vague terms and emphasis markers per 100 words~\cite{femmer2017smells}. & Functional; stretch & SN-4 & ---\\
+RD-S1 & The module may count vague terms per 100 words~\cite{femmer2017smells}. & Functional; stretch & SN-4 & ---\\
 \end{longtable}
 \end{singlespace}
 
@@ -139,18 +165,17 @@ CL-03 & The Clone Coverage module shall form connected clone groups and report e
 \end{longtable}
 \end{singlespace}
 
-Figure~\ref{fig:critical-rd2} gives the context for RD-2. RD-10 replaces a rating study with a check that costs about 1.3~h: at a median of 476 words and 238 words per minute~\cite{brysbaert2019read}, 40 skills take about 80 minutes, and the extremes show whether a grade separates clearly harder text from clearly easier text. This check supports the wording we use for results and is not a model of human readability.
+Figure~\ref{fig:critical-rd2} gives the context for RD-2. RD-10 supports the wording of our results: the extremes show whether a grade separates clearly harder text from clearly easier text, at a cost of about 80 minutes of reading (Appendix~\ref{app:requirements}).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{figures/critical-rd2.pdf}
-\caption{Relationships of critical requirement RD-2 to its need, parent, functions, logical elements, rationale, verification, and derived requirement.}
+\caption{Relationships of critical requirement RD-2.}
 \label{fig:critical-rd2}
 \end{figure}
 
 \CourseSubsection{Risks and safety hazards}
-We use the ISO~31000 sense of risk, the effect of uncertainty on objectives~\cite{iso31000}, and size each risk from measured exposure. The pipeline is desk-based software with no physical hazard.
-\textbf{Untrusted code.} GitSkills holds 7.26 million bundled files from unreviewed repositories, and running one could compromise a team machine, so the pipeline reads them only as text (SYS-6, T10).
-\textbf{Privacy.} The data is public and commit authors are coded, which fits the TCPS~2 exemptions for public and anonymous information~\cite[Arts.~2.2, 2.4]{tcps2022}. Repository names remain identifiable, so we report aggregates only; we will confirm with the supervisor that no ethics review is needed.
-\textbf{Licensing.} Skill text stays under each repository's license~\cite{gitskills2027}, so we release derived metrics only (SYS-5).
-\textbf{Scale.} The 44~GB database is 2.75 times the 16~GB memory limit, which batched reads manage.
+The pipeline has no physical hazard. Three risks remain, each limited by a requirement.
+\textbf{Untrusted code.} A bundled script may compromise a team machine if run: GitSkills holds 7.26 million bundled files, and skills are copied without formal review~\cite{msr2027MiningChallenge}. SYS-6 limits the pipeline to reading them as text.
+\textbf{Privacy.} Repository names remain identifiable although commit authors are coded. The data fits the TCPS~2 exemptions for public and anonymous information~\cite[Arts.~2.2, 2.4]{tcps2022}, and we report aggregates only; we will confirm with the supervisor that no ethics review is needed.
+\textbf{Licensing.} Skill text stays under each repository's license~\cite{gitskills2027}, so SYS-5 limits the replication package to derived metrics.

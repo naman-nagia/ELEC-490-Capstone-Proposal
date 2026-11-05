@@ -58,7 +58,7 @@ def pipeline():
         "F1\nIngest tables", "F2\nPrepare records", "F3\nCalculate metrics\n(F3.1 to F3.5)",
         "F4\nIntegrate results", "F5\nAnalyze, plot"])]
     ls = [c.box(x, yl, t, w=13, h=6.5, edge=MUTED, fill=DATA) for x, t in zip(xs, [
-        "Data loader\n(DuckDB)", "Preprocessor", "Metric modules", "Output joiner", "Analysis, plots"])]
+        "Data loader", "Preprocessor", "Metric modules", "Output joiner", "Analysis, plots"])]
     c.arrow(R(e1), L(fs[0]), "I1", ly=1.2)
     for a, b, lab in zip(fs, fs[1:], ["I2", "I3", "I4", "I5"]):
         c.arrow(R(a), L(b), lab, ly=1.2)
@@ -120,15 +120,15 @@ def readability_functional():
 def readability_logical():
     c = Canvas(7.0, 2.45, ymax=47)
     top, mid, bot = 37, 22, 7
-    a = c.box(7, mid, "Data loader\nDuckDB\n(F1.1)", w=12, h=10, edge=MUTED, fill=DATA)
-    b = c.box(25, mid, "Eligibility filter\nPython\n(F2.1)", w=13, h=10)
-    d = c.box(44, mid, "Skill parser\nPyYAML, regex\n(F3.5.1, F3.5.2)", w=14.5, h=10)
-    e = c.box(44, top, "Markdown normalizer\nregex (F3.5.3)", w=16, h=8.5)
-    f = c.box(63, top, "Language identifier\nfastText (F3.5.4)", w=15, h=8.5)
-    g = c.box(84, top, "Prose scorer\ntextstat\n(F3.5.5, F3.5.6)", w=14.5, h=9.5)
-    h = c.box(44, bot, "Code windower\nPython (F3.5.7)", w=14.5, h=8.5)
-    i = c.box(63, bot, "Code scorer\nPython (F3.5.8)", w=14.5, h=8.5)
-    j = c.box(84, mid, "Results writer\npandas, Parquet\n(F3.5.9)", w=14.5, h=10)
+    a = c.box(7, mid, "Data loader\n(F1.1)", w=12, h=10, edge=MUTED, fill=DATA)
+    b = c.box(25, mid, "Eligibility filter\n(F2.1)", w=13, h=10)
+    d = c.box(44, mid, "Skill parser\n(F3.5.1, F3.5.2)", w=14.5, h=10)
+    e = c.box(44, top, "Markdown normalizer\n(F3.5.3)", w=16, h=8.5)
+    f = c.box(63, top, "Language identifier\n(F3.5.4)", w=15, h=8.5)
+    g = c.box(84, top, "Prose scorer\n(F3.5.5, F3.5.6)", w=14.5, h=9.5)
+    h = c.box(44, bot, "Code windower\n(F3.5.7)", w=14.5, h=8.5)
+    i = c.box(63, bot, "Code scorer\n(F3.5.8)", w=14.5, h=8.5)
+    j = c.box(84, mid, "Results writer\n(F3.5.9)", w=14.5, h=10)
     k = c.box(84, bot, "Output joiner (F4),\nanalysis and plots\n(F5.1, F5.2)", w=15.5, h=9.5, edge=MUTED, fill=DATA)
     c.arrow(R(a), L(b), "supplies rows to", ly=7.3, fs=5.7)
     c.arrow(R(b), L(d), "passes skills to", lx=-1.0, ly=7.3, fs=5.7)
@@ -153,11 +153,11 @@ def hierarchy():
     sys2 = c.box(31, 11, "SYS-2\nGive every row a status", w=19, h=6, edge=RED, lw=1.5)
     r1 = c.box(55, 30, "RD-1 Score each part", w=17, h=4.4, edge=RED, lw=1.5)
     r2 = c.box(55, 24, "RD-2 Prose to sentences", w=17, h=4.4, edge=RED, lw=1.5)
-    v = c.box(55, 18, "RD-10 Hand review", w=17, h=4.4, edge=RED, lw=1.5)
+    v = c.box(55, 18, "RD-10 Review export", w=17, h=4.4)
     br = c.box(55, 12, "Size, churn, age, clone", w=17, h=4.4, edge=MUTED, fill=DATA)
     n = c.box(55, 6, "RD-4, RD-6 Shall nots", w=17, h=4.4, edge=RED, lw=1.5)
-    r11 = c.box(83, 30, "RD-1.1 Prose · RD-1.3 Description\nRD-1.4 Code", w=30, h=5, fs=6)
-    r21 = c.box(83, 24, "RD-2.1 Stream accuracy · RD-3 Language", w=30, h=4.4, fs=6)
+    r11 = c.box(83, 30, "RD-1.1 to RD-1.4 Scores\nRD-3 Language label", w=30, h=5, fs=6)
+    r21 = c.box(83, 24, "RD-2.1 One stream per line", w=30, h=4.4, fs=6)
     tv = c.box(83, 18, "T05.5 Hand review (validation)", w=30, h=4.4, fs=6, edge=MUTED, fill=DATA)
     tn = c.box(83, 6, "T05.6 Fault injection (verification)", w=30, h=4.4, fs=6, edge=MUTED, fill=DATA)
     c.arrow(R(sn), L(sys1))
@@ -174,7 +174,7 @@ def hierarchy():
     c.save("requirements-hierarchy")
 
 
-def relationship(name, need, parent, req, rationale, functions, logical, verification, derived):
+def relationship(name, need, parent, req, rationale, functions, logical, physical, verification, derived):
     c = Canvas(7.0, 2.8, ymax=52)
     sn = c.box(15, 43.5, need, w=27, h=11, fill=GOLD, edge=MUTED, fs=6.6)
     pa = c.box(50, 43.5, parent, w=28, h=11, fs=6.6)
@@ -184,13 +184,15 @@ def relationship(name, need, parent, req, rationale, functions, logical, verific
     ve = c.box(84, 24.5, verification, w=30, h=10.5, fs=6.4)
     lo = c.box(16, 6.5, logical, w=29, h=11.5, edge=NAVY, fs=6.4, lw=1.3)
     de = c.box(84, 7, derived, w=30, h=11, fs=6.4)
+    ph = c.box(50, 6.5, physical, w=26, h=11.5, edge=MUTED, fill=DATA, fs=6.4)
     c.arrow(L(pa), R(sn), "traced from", ly=1.3, fs=5.6)
     c.arrow(T(re_), B(pa), "traced from", lx=6.0, ly=0)
     c.arrow(L(ra), (re_["x"] + 14.2, 29.0), "justifies", lx=-3.0, ly=1.3, fs=5.8)
     c.arrow(R(fu), L(re_), "satisfies", ly=1.1)
     c.arrow(R(re_), L(ve), "verified\nby", color=RED, ly=2.4, fs=5.8)
-    c.arrow((re_["x"] + 14.2, 20.0), (de["x"] - 15.2, 9.0), "flows down to", lx=-7.0, ly=-1.4, color=NAVY)
+    c.arrow((re_["x"] + 14.2, 20.0), (de["x"] - 15.2, 9.0), "flows down to", lx=7.5, ly=1.6, color=NAVY)
     c.arrow(B(fu), T(lo), "allocated to", lx=6.2, ly=0, color=NAVY)
+    c.arrow(R(lo), L(ph), "built with", ly=1.2, fs=5.6, color=NAVY)
     c.save(name)
 
 
@@ -200,21 +202,23 @@ def relationships():
         "STAKEHOLDER NEED · SN-1\nA researcher should be able to tell\nwhich established metrics have\nmeaningful equivalents for skills.",
         "PARENT · SYS-1\nThe pipeline shall compute all five\nmetrics for every eligible skill.",
         "REQUIREMENT · RD-2 (critical)\nWhen prose contains a heading, list\nitem or table row, the normalizer\nshall output it as its own sentence.",
-        "RATIONALE\nFormulas count words per sentence.\nPilot: raw Markdown lifts the median\ngrade from 8.6 to 12.2.\nRejected: score raw text (inflated);\nstrip all lists (drops instructions).\nAssumes: CommonMark-style Markdown.",
+        "RATIONALE\nFormulas count words per sentence.\nPilot: raw Markdown lifts the median\ngrade from 8.6 to 12.2.\nRejected: score raw text (inflated);\nstrip all lists (drops instructions).\nAssumes: skill bodies use Markdown.",
         "FUNCTIONS\nF3.5.3 Convert Markdown to sentences:\nR3 (prose Markdown) to R5 (sentence\ntext). Upstream: F3.5.2 supplies R3.",
-        "LOGICAL ELEMENTS\nSkill parser sends prose to the\nMarkdown normalizer, which sends\nsentences to the language identifier.\nImplemented with Python regex.",
-        "VERIFICATION · T05.1 (P2, M3)\n20 hand-marked files. Pass: every\nheading, list item and table row is its\nown sentence; RD-2.1 is met.",
-        "DERIVED · RD-2.1\nThe segmenter shall assign every line\nof 20 hand-marked files to the\ncorrect stream.")
+        "LOGICAL ELEMENTS\nSkill parser sends prose to the\nMarkdown normalizer, which sends\nsentences to the language identifier.",
+        "PHYSICAL ELEMENTS\nPython regular expressions\nin the normalizer script",
+        "VERIFICATION · T05.1 (P2, M3)\n20 hand-marked files. Pass: every\nheading, list item and table row is its\nown sentence; every line has one stream.",
+        "DERIVED · RD-2.1\nThe segmenter shall assign each line\nof a skill to exactly one stream.")
     relationship(
         "critical-rd6",
         "STAKEHOLDER NEED · SN-4\nA reader should be able to see the\nlimits of each metric before relying\non it.",
         "PARENT · SYS-2\nThe pipeline shall assign every row\none status with a logged reason.",
-        "REQUIREMENT · RD-6 (critical)\nThe module shall not present a grade\nas a measure of skill quality.",
+        "REQUIREMENT · RD-6 (critical)\nThe module shall not label a grade\nas a quality score.",
         "RATIONALE\nThe formulas were calibrated on general\ntext, not agent instructions.\nRejected: rating scale with rater\nagreement (work exceeds the decision\nit supports); LLM rater (breaks PF-03).",
         "FUNCTIONS\nF3.5.9 Assemble readability table:\nR9 to R11 to I4.\nF5.1 Compute statistics: I5 to O1.",
         "LOGICAL ELEMENTS\nResults writer labels each score, and\nthe analysis stage carries that label\ninto tables and figures.",
-        "VERIFICATION · T05.6 (P2, M3, M4)\nFault injection on controlled inputs.\nPass: labels say reading-level\nestimate, never quality.",
-        "DERIVED · RD-10\nThe team shall hand-review the 20\nhighest- and 20 lowest-graded skills\nand record whether each grade fits.")
+        "PHYSICAL ELEMENTS\nLabel column in the\nParquet readability table",
+        "VERIFICATION · T05.6 (P2, M3, M4)\nFault injection on controlled inputs.\nPass: no grade is labelled\na quality score.",
+        "DERIVED · RD-10\nThe module shall export the 40\nextreme-graded English skills\nfor hand review.")
 
 
 def test_setup():
